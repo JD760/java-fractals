@@ -18,6 +18,7 @@ public class Gui extends Frame {
    */
   public Gui(int width, int height, FractalCanvas canvas) {
     setSize(width, height);
+    System.out.println(width + "  " + height);
     setResizable(false);
 
     addWindowListener(new WindowAdapter() {
@@ -34,7 +35,7 @@ public class Gui extends Frame {
       }
     });
 
-    add(new FractalCanvas());
+    add(canvas);
     setTitle("Java Fractals");
     setVisible(true);
   }

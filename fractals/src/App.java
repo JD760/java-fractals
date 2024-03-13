@@ -1,3 +1,7 @@
+import java.util.Arrays;
+
+import colouring.Colouring;
+import fractals.Fractal;
 import gui.FractalCanvas;
 import gui.Gui;
 
@@ -14,7 +18,17 @@ public class App {
    * @param args - application arguments
    */
   public static void main(String[] args) {
-    FractalCanvas canvas = new FractalCanvas();
+    // generate a fractal
+    Fractal myFractal = new Fractal(WIDTH, HEIGHT);
+    myFractal.mandelbrot();
+    int[][] data = myFractal.getIterationData();
+
+    Colouring colouring = new Colouring(WIDTH, HEIGHT, 1000, data);
+    int[][][] pixels = colouring.modulusColouring();
+
+    // colour the fractal from its' iteration data
+    // create the GUI
+    FractalCanvas canvas = new FractalCanvas(WIDTH, HEIGHT, pixels);
     @SuppressWarnings("unused")
     Gui gui = new Gui(WIDTH, HEIGHT, canvas);
   }
