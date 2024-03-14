@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 import colouring.Colouring;
 import fractals.Fractal;
 import gui.FractalCanvas;

@@ -38,6 +38,7 @@ public class Fractal {
    * Draws a new mandelbrot and fills the iterationData array with values.
    */
   public void mandelbrot() {
+    double startTime = System.nanoTime();
     // complex numbers are defined as double[2] with the real and imaginary components
     // being the 0th and 1st index respectively
     double[] c = {0, 0};
@@ -65,9 +66,7 @@ public class Fractal {
         }
         iterationData[y][x] = iterations;
       }
-      if (y % 10 == 0) {
-        System.out.println(y);
-      }
     }
+    System.out.println("Execution Time: " + (System.nanoTime() - startTime) / 1000000);
   }
 }
