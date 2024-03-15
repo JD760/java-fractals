@@ -2,13 +2,14 @@ import colouring.Colouring;
 import fractals.Fractal;
 import gui.FractalCanvas;
 import gui.Gui;
+import old.multithreaded.Util;
 
 /**
  * Main app instance, contains driver code to run the fractals application.
  */
 public class App {
-  static int WIDTH = 1440;
-  static int HEIGHT = 720;
+  static int WIDTH = Util.WIDTH;
+  static int HEIGHT = Util.HEIGHT;
 
   /**
    * Create a new instance of the application.
@@ -17,9 +18,11 @@ public class App {
    */
   public static void main(String[] args) {
     // generate a fractal
-    Fractal myFractal = new Fractal(WIDTH, HEIGHT);
+    Fractal myFractal = new Fractal(WIDTH, HEIGHT, 1);
+    int[][] data;
     myFractal.mandelbrot();
-    int[][] data = myFractal.getIterationData();
+    data = myFractal.getIterationData();
+    //int[][] data = myFractal.getIterationData();
 
     Colouring colouring = new Colouring(WIDTH, HEIGHT, 1000, data);
     int[][][] pixels = colouring.modulusColouring();

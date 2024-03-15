@@ -39,11 +39,11 @@ public class Colouring {
       for (int x = 0; x < width; x++) {
         // represents the RGB values of the pixel
         int iterations = iterationData[y][x];
-        if (iterations == 0) {
+        if (iterations == 0 || iterations == maxIterations) {
           pixelData[y][x] = new int[] {0, 0, 0};
           continue;
         }
-        pixelData[y][x] = new int[] {iterations % 255, iterations % 255, iterations % 255};
+        pixelData[y][x] = new int[] {iterations % 255, iterations % 50, 0};
       }
     }
     return pixelData;
