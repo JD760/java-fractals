@@ -5,6 +5,7 @@
  */
 public class Chunk implements Runnable {
   final int size;
+  final Fractals type;
   final int width;
   final int height;
   final int[] position;
@@ -17,6 +18,7 @@ public class Chunk implements Runnable {
    * Create a new Chunk to represent a portion of the viewport.
 
    * @param size - the size of the chunk in pixels, e.g. 32x32px
+   * @param type - A value in the fractals enumeration representing the fractal to be processed
    * @param position - the position (x, y) representing the top left corner of the chunk
    * @param width - the width of the entire viewport
    * @param height - the height of the entire viewport
@@ -25,9 +27,10 @@ public class Chunk implements Runnable {
     never escapes - higher maximum means longer processing times but (much) higher quality
    * @param scale - the scale/zoom factor of the image, larger scale means higher zoom
    */
-  public Chunk(int size, int[] position, int width, int height,
+  public Chunk(int size, Fractals type, int[] position, int width, int height,
       double[] center, int maxIterations, double scale) {
     this.size = size;
+    this.type = type;
     this.width = width;
     this.height = height;
     this.position = position;
@@ -41,12 +44,22 @@ public class Chunk implements Runnable {
   public void run() {
     for (int y = position[1]; y < position[1] + size; y++) {
       for (int x = position[0]; x < position[0] + size; x++) {
-        iterationData[y - position[1]][x - position[0]] = iteratePoint(x, y);
+        switch (type) {
+          case MANDELBROT:
+            iterationData[y - position[1]][x - position[0]] = mandelbrotPoint(x, y);
+            break;
+          case JULIA:
+            break;
+          case BURNING_SHIP:
+            break;
+          default:
+            break;
+        }
       }
     }
   }
 
-  private int iteratePoint(int x, int y) {
+  private int mandelbrotPoint(int x, int y) {
     double[] c = new double[] {0, 0};
     double[] z = new double[] {0, 0};
     // compute the current location translated into the complex plane

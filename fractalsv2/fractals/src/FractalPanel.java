@@ -3,7 +3,9 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.swing.AbstractAction;
@@ -24,7 +26,6 @@ public class FractalPanel extends JPanel {
   double[] center;
   double scale;
   Chunk[][] chunks;
-
   /**
    * Create a new UI window with provided width and height. The window takes the shape
    * of the largest square that can be created on the user's display.
@@ -61,14 +62,16 @@ public class FractalPanel extends JPanel {
     amap.put("changeColour", changeColour);
     imap.put(KeyStroke.getKeyStroke("I"), "increaseIterations");
     amap.put("increaseIterations", increaseIterations);
-    //getInputMap().put(KeyStroke.getKeyStroke("V"), "autoZoom");
-    //getActionMap().put("autoZoom", autoZoom);
     addMouseListener(mouseListener);
   }
 
   MouseAdapter mouseListener = new MouseAdapter() {
     @Override
     public void mousePressed(MouseEvent e) {
+      // we only want click-to-zoom to work within the bounds of the image panel
+      if (e.getX() > width || e.getY() > height) {
+        return;
+      }
       // get points in the complex plane and set the center point to the
       // position of the mouse
       center[0] = center[0] - ((((e.getX() / (double) width) * 3) / scale) - (2 / scale));
@@ -86,12 +89,27 @@ public class FractalPanel extends JPanel {
     createChunks();
     long startTime = System.nanoTime();
 
+    ConcurrentLinkedQueue<ChunkPainter> painters = new ConcurrentLinkedQueue<>();
+    ExecutorService threadpool = Executors.newFixedThreadPool(10);
+
     for (int y = 0; y < chunks.length; y++) {
       for (int x = 0; x < chunks[0].length; x++) {
-        paintChunk(chunks[y][x], g);
+        //paintChunk(chunks[y][x], g);
+        BufferedImage image = new BufferedImage(32, 32, BufferedImage.TYPE_3BYTE_BGR);
+        ChunkPainter painter = new ChunkPainter(chunks[y][x], image, maxIterations, 32 * x, 32 * y);
+        threadpool.execute(painter);
+        painters.add(painter);
       }
     }
+
+    threadpool.close();
+
+    while (!painters.isEmpty()) {
+      ChunkPainter painter = painters.poll();
+      g.drawImage(painter.image, painter.x, painter.y, this);
+    }
     System.out.println("Painting Time: " + ((System.nanoTime() - startTime) / 1000000.0) + "ms");
+    System.out.println("--------------------");
   }
 
   /**
@@ -109,9 +127,9 @@ public class FractalPanel extends JPanel {
       for (int x = 0; x < 32; x++) {
         int iterations = chunk.iterationData[y][x];
         if (iterations == maxIterations) {
-          g.setColor(new Color(0));
+          g.setColor(Color.BLACK);
         } else if (iterations < 0.001 * maxIterations) {
-          g.setColor(new Color(0));
+          g.setColor(Color.BLACK);
         } else {
           int colour = (iterations + 20 + (colourOffset % 120)) % 255;
           g.setColor(new Color(colour, colour, colour));
@@ -135,8 +153,8 @@ public class FractalPanel extends JPanel {
 
     for (int y = 0; y < chunksY; y++) {
       for (int x = 0; x < chunksX; x++) {
-        chunks[y][x] = new Chunk(
-          32, new int[] {32 * x, 32 * y}, width, height, center, maxIterations, scale);
+        chunks[y][x] = new Chunk(32, Fractals.MANDELBROT, new int[] {32 * x, 32 * y},
+         width, height, center, maxIterations, scale);
         threadpool.execute(chunks[y][x]);
       }
     }

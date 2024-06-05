@@ -25,11 +25,12 @@ public class App {
     int height = (int) screenSize.getHeight();
     // create the largest square that can fit on the display
     int viewportSize = Math.min(height - (height % 32), width - (width % 32));
+
     FractalPanel panel = new FractalPanel(viewportSize, viewportSize);
     Frame f = new Frame(panel);
-    f.setSize(viewportSize, viewportSize);
+    f.setSize(viewportSize + 200, viewportSize);
 
-    f.add(panel);
-    f.setVisible(true);
+    //f.add(panel);
+    //f.setVisible(true);
   }
 }
