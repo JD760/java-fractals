@@ -24,7 +24,11 @@ public class FractalPanel extends JPanel {
   int colourOffset = 0;
   int maxIterations = 1000;
   double[] center;
+  Fractals mode = Fractals.MANDELBROT;
+  Complex seed = new Complex(-0.835, 0.232);
   double scale;
+  boolean repaintCenter = false;
+  int[] centerCoords = new int[] {0, 0};
   Chunk[][] chunks;
   /**
    * Create a new UI window with provided width and height. The window takes the shape
@@ -77,6 +81,8 @@ public class FractalPanel extends JPanel {
       center[0] = center[0] - ((((e.getX() / (double) width) * 3) / scale) - (2 / scale));
       center[1] = center[1] - ((((e.getY() / (double) height) * 3) / scale) - (1.25 / scale));
       scale *= 2;
+      centerCoords = new int[]{e.getX(), e.getY()};
+      repaintCenter = true;
       repaint();
       System.out.println(Arrays.toString(center));
     }
@@ -87,7 +93,7 @@ public class FractalPanel extends JPanel {
   public void paintComponent(Graphics g) {
     super.paintComponent(g);
     createChunks();
-    long startTime = System.nanoTime();
+    final long startTime = System.nanoTime();
 
     ConcurrentLinkedQueue<ChunkPainter> painters = new ConcurrentLinkedQueue<>();
     ExecutorService threadpool = Executors.newFixedThreadPool(10);
@@ -108,35 +114,14 @@ public class FractalPanel extends JPanel {
       ChunkPainter painter = painters.poll();
       g.drawImage(painter.image, painter.x, painter.y, this);
     }
+
+    if (repaintCenter) {
+      g.setColor(Color.RED);
+      g.fillRect(centerCoords[0] - 1, centerCoords[1] - 1, 3, 3);
+      repaintCenter = false;
+    }
     System.out.println("Painting Time: " + ((System.nanoTime() - startTime) / 1000000.0) + "ms");
     System.out.println("--------------------");
-  }
-
-  /**
-   * Use the iteration data contained in each chunk to paint the fractal image with
-   * pixel data derived from the chunk data.
-
-   * @param chunk - represents a region in the complex plane
-   * @param g - graphics object used to paint to the panel canvas
-   */
-  public void paintChunk(Chunk chunk, Graphics g) {
-    int startX = chunk.position[0];
-    int startY = chunk.position[1];
-
-    for (int y = 0; y < 32; y++) {
-      for (int x = 0; x < 32; x++) {
-        int iterations = chunk.iterationData[y][x];
-        if (iterations == maxIterations) {
-          g.setColor(Color.BLACK);
-        } else if (iterations < 0.001 * maxIterations) {
-          g.setColor(Color.BLACK);
-        } else {
-          int colour = (iterations + 20 + (colourOffset % 120)) % 255;
-          g.setColor(new Color(colour, colour, colour));
-        }
-        g.fillRect(startX + x, startY + y, 1, 1);
-      }
-    }
   }
 
   /**
@@ -153,8 +138,8 @@ public class FractalPanel extends JPanel {
 
     for (int y = 0; y < chunksY; y++) {
       for (int x = 0; x < chunksX; x++) {
-        chunks[y][x] = new Chunk(32, Fractals.MANDELBROT, new int[] {32 * x, 32 * y},
-         width, height, center, maxIterations, scale);
+        chunks[y][x] = new Chunk(32, mode, new int[] {32 * x, 32 * y},
+         width, height, center, seed, maxIterations, scale);
         threadpool.execute(chunks[y][x]);
       }
     }

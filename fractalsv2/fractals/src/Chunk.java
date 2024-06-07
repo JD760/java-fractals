@@ -10,8 +10,13 @@ public class Chunk implements Runnable {
   final int height;
   final int[] position;
   final double[] center;
+  final Complex seed;
   final int maxIterations;
   final double scale;
+  final int boxSize = 3;
+  final double epsilon = Math.pow(10, -8);
+  final double aspectRatio;
+  final double scaleConstant;
   int[][] iterationData;
 
   /**
@@ -28,15 +33,20 @@ public class Chunk implements Runnable {
    * @param scale - the scale/zoom factor of the image, larger scale means higher zoom
    */
   public Chunk(int size, Fractals type, int[] position, int width, int height,
-      double[] center, int maxIterations, double scale) {
+      double[] center, Complex seed, int maxIterations, double scale) {
     this.size = size;
     this.type = type;
     this.width = width;
     this.height = height;
     this.position = position;
     this.center = center;
+    this.seed = seed;
     this.maxIterations = maxIterations;
     this.scale = scale;
+    // compute the aspect ratio and scale constant separately as these are values
+    // that are reused millions of times in computing the iteration data
+    aspectRatio = width / (double) height;
+    scaleConstant = aspectRatio / scale;
     iterationData = new int[size][size];
   }
 
@@ -46,9 +56,10 @@ public class Chunk implements Runnable {
       for (int x = position[0]; x < position[0] + size; x++) {
         switch (type) {
           case MANDELBROT:
-            iterationData[y - position[1]][x - position[0]] = mandelbrotPoint(x, y);
+            iterationData[y - position[1]][x - position[0]] = complexPoint(x, y);
             break;
           case JULIA:
+            iterationData[y - position[1]][x - position[0]] = juliaPoint(x, y, seed);
             break;
           case BURNING_SHIP:
             break;
@@ -59,21 +70,42 @@ public class Chunk implements Runnable {
     }
   }
 
-  private int mandelbrotPoint(int x, int y) {
-    double[] c = new double[] {0, 0};
-    double[] z = new double[] {0, 0};
+  private int complexPoint(int x, int y) {
+    Complex c = new Complex(0, 0);
+    Complex z = new Complex(0, 0);
     // compute the current location translated into the complex plane
     // and use this as the seed
-    c[0] = (((x / (double) width) * 3) / scale) - (2 / scale);
-    c[1] = ((((y / (double) height) * 3) / scale) - (1.25 / scale));
+    double x1 = x / (double) width;
+    double y1 = y / (double) height;
+    c.setRe((3 * x1 - 2) * scaleConstant);
+    c.setIm(((y1 * 3) / scale) - (1.25) / scale);
 
     int iterations = 0;
     while (iterations < maxIterations) {
-      double tempRe = z[0];
-      z[0] = ((z[0] * z[0] - z[1] * z[1]) + c[0]) - center[0];
-      z[1] = (2 * tempRe * z[1] + c[1]) - center[1];
+      z.square();
+      z.add(c);
+      z.subtract(new Complex(center[0], center[1]));
 
-      if (z[0] * z[0] + z[1] * z[1] > 2) {
+      if (z.magnitude() > 4) {
+        break;
+      }
+      iterations++;
+    }
+    return iterations;
+  }
+
+  private int juliaPoint(int x, int y, Complex seed) {
+    Complex z = new Complex(0, 0);
+    z.setRe((((x / (double) width) * (4 * aspectRatio)) / scale) - ((2 * aspectRatio) / scale));
+    z.setIm((((y / (double) height)) * 4 / scale) - (2 / scale));
+
+    int iterations = 0;
+    while (iterations < maxIterations) {
+      z.square();
+      z.add(seed);
+      z.subtract(new Complex(center[0], center[1]));
+
+      if (z.magnitude() > 4) {
         break;
       }
       iterations++;
