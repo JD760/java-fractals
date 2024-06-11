@@ -3,6 +3,7 @@
  */
 public enum Fractals {
   MANDELBROT,
+  INTERIOR_POINT,
   JULIA,
   BURNING_SHIP
 }

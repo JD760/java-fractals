@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,7 +22,7 @@ public class FractalPanel extends JPanel {
   int height;
   int colourOffset = 0;
   int maxIterations = 1000;
-  double[] center;
+  Complex center;
   Fractals mode = Fractals.MANDELBROT;
   Complex seed = new Complex(-0.835, 0.232);
   double scale;
@@ -40,7 +39,7 @@ public class FractalPanel extends JPanel {
   public FractalPanel(int width, int height) {
     this.width = width;
     this.height = height;
-    this.center = new double[] {0, 0};
+    this.center = new Complex();
     this.scale = 1;
 
     InputMap imap = getInputMap();
@@ -66,6 +65,10 @@ public class FractalPanel extends JPanel {
     amap.put("changeColour", changeColour);
     imap.put(KeyStroke.getKeyStroke("I"), "increaseIterations");
     amap.put("increaseIterations", increaseIterations);
+    imap.put(KeyStroke.getKeyStroke("M"), "nextMode");
+    amap.put("nextMode", nextMode);
+    imap.put(KeyStroke.getKeyStroke("N"), "prevMode");
+    amap.put("prevMode", prevMode);
     addMouseListener(mouseListener);
   }
 
@@ -78,13 +81,12 @@ public class FractalPanel extends JPanel {
       }
       // get points in the complex plane and set the center point to the
       // position of the mouse
-      center[0] = center[0] - ((((e.getX() / (double) width) * 3) / scale) - (2 / scale));
-      center[1] = center[1] - ((((e.getY() / (double) height) * 3) / scale) - (1.25 / scale));
+      center.setRe(center.re() - ((((e.getX() / (double) width) * 3) / scale) - (2 / scale)));
+      center.setIm(center.im() - ((((e.getY() / (double) height) * 3) / scale) - (1.25 / scale)));
       scale *= 2;
       centerCoords = new int[]{e.getX(), e.getY()};
       repaintCenter = true;
       repaint();
-      System.out.println(Arrays.toString(center));
     }
   };
   
@@ -159,33 +161,29 @@ public class FractalPanel extends JPanel {
 
   Action moveUp = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      center[1] -= 0.1 / scale;
+      center.setRe(center.re() - (0.1 / scale));
       repaint();
-      System.out.println(Arrays.toString(center));
     }
   };
 
   Action moveDown = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      center[1] += 0.1 / scale;
+      center.setIm(center.im() + (0.1 / scale));
       repaint();
-      System.out.println(Arrays.toString(center));
     }
   };
 
   Action moveLeft = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      center[0] -= 0.1 / scale;
+      center.setRe(center.re() - (0.1 / scale));
       repaint();
-      System.out.println(Arrays.toString(center));
     }
   };
 
   Action moveRight = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      center[0] += 0.1 / scale;
+      center.setRe(center.re() +  (0.1 / scale));
       repaint();
-      System.out.println(Arrays.toString(center));
     }
   };
 
@@ -210,8 +208,7 @@ public class FractalPanel extends JPanel {
   Action resetZoom = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       scale = 1;
-      center[0] = 0;
-      center[1] = 0;
+      center = new Complex();
       maxIterations = 1000;
       repaint();
     }
@@ -226,6 +223,24 @@ public class FractalPanel extends JPanel {
   Action increaseIterations = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       maxIterations *= 2;
+      repaint();
+    }
+  };
+
+  Action nextMode = new AbstractAction() {
+    public void actionPerformed(ActionEvent e) {
+      Fractals[] values = Fractals.values();
+      int index = (mode.ordinal() + 1) % values.length;
+      mode = values[index];
+      repaint();
+    }
+  };
+
+  Action prevMode = new AbstractAction() {
+    public void actionPerformed(ActionEvent e) {
+      Fractals[] values = Fractals.values();
+      int index = (mode.ordinal() - 1) % values.length;
+      mode = values[index];
       repaint();
     }
   };

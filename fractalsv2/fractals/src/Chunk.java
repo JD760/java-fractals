@@ -9,7 +9,7 @@ public class Chunk implements Runnable {
   final int width;
   final int height;
   final int[] position;
-  final double[] center;
+  final Complex center;
   final Complex seed;
   final int maxIterations;
   final double scale;
@@ -33,7 +33,7 @@ public class Chunk implements Runnable {
    * @param scale - the scale/zoom factor of the image, larger scale means higher zoom
    */
   public Chunk(int size, Fractals type, int[] position, int width, int height,
-      double[] center, Complex seed, int maxIterations, double scale) {
+      Complex center, Complex seed, int maxIterations, double scale) {
     this.size = size;
     this.type = type;
     this.width = width;
@@ -56,7 +56,10 @@ public class Chunk implements Runnable {
       for (int x = position[0]; x < position[0] + size; x++) {
         switch (type) {
           case MANDELBROT:
-            iterationData[y - position[1]][x - position[0]] = complexPoint(x, y);
+            iterationData[y - position[1]][x - position[0]] = mandelbrotPoint(x, y);
+            break;
+          case INTERIOR_POINT:
+            iterationData[y - position[1]][x - position[0]] = interiorPoint(x, y);
             break;
           case JULIA:
             iterationData[y - position[1]][x - position[0]] = juliaPoint(x, y, seed);
@@ -70,7 +73,7 @@ public class Chunk implements Runnable {
     }
   }
 
-  private int complexPoint(int x, int y) {
+  private int mandelbrotPoint(int x, int y) {
     Complex c = new Complex(0, 0);
     Complex z = new Complex(0, 0);
     // compute the current location translated into the complex plane
@@ -78,16 +81,43 @@ public class Chunk implements Runnable {
     double x1 = x / (double) width;
     double y1 = y / (double) height;
     c.setRe((3 * x1 - 2) * scaleConstant);
-    c.setIm(((y1 * 3) / scale) - (1.25) / scale);
+    c.setIm((3 * y1 - 1.25) / scale);
 
     int iterations = 0;
     while (iterations < maxIterations) {
       z.square();
       z.add(c);
-      z.subtract(new Complex(center[0], center[1]));
+      z.subtract(center);
 
       if (z.magnitude() > 4) {
         break;
+      }
+      iterations++;
+    }
+    return iterations;
+  }
+
+  private int interiorPoint(int x, int y) {
+    Complex c = new Complex(0, 0);
+    Complex z = new Complex(0, 0);
+    // compute the current location translated into the complex plane
+    // and use this as the seed
+    double x1 = x / (double) width;
+    double y1 = y / (double) height;
+    c.setRe((3 * x1 - 2) * scaleConstant);
+    c.setIm((3 * y1 - 1.25) / scale);
+
+    int iterations = 0;
+    while (iterations < maxIterations) {
+      z.square();
+      z.add(c);
+      z.subtract(center);
+
+      if (z.magnitude() > 4) {
+        if (iterations % 2 == 0) {
+          return 1000;
+        }
+        return 254;
       }
       iterations++;
     }
@@ -103,7 +133,7 @@ public class Chunk implements Runnable {
     while (iterations < maxIterations) {
       z.square();
       z.add(seed);
-      z.subtract(new Complex(center[0], center[1]));
+      z.subtract(center);
 
       if (z.magnitude() > 4) {
         break;
