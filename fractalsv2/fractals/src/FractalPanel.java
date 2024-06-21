@@ -1,3 +1,4 @@
+import complex.Complex;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -85,6 +86,7 @@ public class FractalPanel extends JPanel {
       center.setIm(center.im() - ((((e.getY() / (double) height) * 3) / scale) - (1.25 / scale)));
       scale *= 2;
       centerCoords = new int[]{e.getX(), e.getY()};
+      System.out.println("Center: " + center.toString());
       repaintCenter = true;
       repaint();
     }

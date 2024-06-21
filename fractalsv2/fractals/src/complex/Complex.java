@@ -1,3 +1,5 @@
+package complex;
+
 /**
  * Represents a complex number, with support for complex arithmetic and comparison.
  */
@@ -6,6 +8,9 @@ public class Complex {
   private double im;
   private double re2;
   private double im2;
+  // due to floating point issues, direct equality testing may cause inaccuracy
+  // so we say two numbers are equal when their real and imaginary components
+  // are different by less than epsilon
   private final double epsilon = 0.00000001;
 
   /**
@@ -41,6 +46,14 @@ public class Complex {
 
   public double im() {
     return im;
+  }
+
+  @Override
+  public String toString() {
+    if (im > 0) {
+      return re + " + " + im + "i";
+    }
+    return re + " - " + (-1 * im) + "i";
   }
 
   /**

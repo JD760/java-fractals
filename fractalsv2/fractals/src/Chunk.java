@@ -1,3 +1,6 @@
+import complex.Complex;
+import java.awt.Color;
+
 /**
  * Represents a region of the viewport, allowing multithreaded computation
  * of pixel data for each region, which can then be stitched together to form
@@ -14,10 +17,10 @@ public class Chunk implements Runnable {
   final int maxIterations;
   final double scale;
   final int boxSize = 3;
-  final double epsilon = Math.pow(10, -8);
+  final double epsilon = Math.pow(10, -6);
   final double aspectRatio;
   final double scaleConstant;
-  int[][] iterationData;
+  Color[][] iterationData;
 
   /**
    * Create a new Chunk to represent a portion of the viewport.
@@ -47,7 +50,7 @@ public class Chunk implements Runnable {
     // that are reused millions of times in computing the iteration data
     aspectRatio = width / (double) height;
     scaleConstant = aspectRatio / scale;
-    iterationData = new int[size][size];
+    iterationData = new Color[size][size];
   }
 
   @Override
@@ -58,13 +61,11 @@ public class Chunk implements Runnable {
           case MANDELBROT:
             iterationData[y - position[1]][x - position[0]] = mandelbrotPoint(x, y);
             break;
-          case INTERIOR_POINT:
-            iterationData[y - position[1]][x - position[0]] = interiorPoint(x, y);
+          case DIVERGENCE_SCHEME:
+            iterationData[y - position[1]][x - position[0]] = divergenceScheme(x, y);
             break;
           case JULIA:
             iterationData[y - position[1]][x - position[0]] = juliaPoint(x, y, seed);
-            break;
-          case BURNING_SHIP:
             break;
           default:
             break;
@@ -73,7 +74,7 @@ public class Chunk implements Runnable {
     }
   }
 
-  private int mandelbrotPoint(int x, int y) {
+  private Color mandelbrotPoint(int x, int y) {
     Complex c = new Complex(0, 0);
     Complex z = new Complex(0, 0);
     // compute the current location translated into the complex plane
@@ -94,10 +95,10 @@ public class Chunk implements Runnable {
       }
       iterations++;
     }
-    return iterations;
+    return new Color(iterations % 255, iterations % 255, iterations % 255);
   }
 
-  private int interiorPoint(int x, int y) {
+  private Color divergenceScheme(int x, int y) {
     Complex c = new Complex(0, 0);
     Complex z = new Complex(0, 0);
     // compute the current location translated into the complex plane
@@ -115,31 +116,38 @@ public class Chunk implements Runnable {
 
       if (z.magnitude() > 4) {
         if (iterations % 2 == 0) {
-          return 1000;
+          return Color.BLACK;
         }
-        return 254;
+        return Color.WHITE;
       }
       iterations++;
     }
-    return iterations;
+    if (iterations == maxIterations) {
+      return Color.BLACK;
+    }
+    return new Color(iterations % 255);
   }
 
-  private int juliaPoint(int x, int y, Complex seed) {
+  private Color juliaPoint(int x, int y, Complex seed) {
     Complex z = new Complex(0, 0);
     z.setRe((((x / (double) width) * (4 * aspectRatio)) / scale) - ((2 * aspectRatio) / scale));
     z.setIm((((y / (double) height)) * 4 / scale) - (2 / scale));
 
     int iterations = 0;
+    z.add(seed);
     while (iterations < maxIterations) {
       z.square();
-      z.add(seed);
+      //z.add(seed);
       z.subtract(center);
 
       if (z.magnitude() > 4) {
-        break;
+        if (iterations % 2 == 0) {
+          return Color.BLACK;
+        }
+        return Color.WHITE;
       }
       iterations++;
     }
-    return iterations;
+    return new Color(iterations % 255);
   }
 }

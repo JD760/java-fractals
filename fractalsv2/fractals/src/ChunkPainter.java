@@ -39,13 +39,8 @@ public class ChunkPainter implements Runnable {
   public void run() {
     for (int x = 0; x < chunk.size; x++) {
       for (int y = 0; y < chunk.size; y++) {
-        int iterations = chunk.iterationData[y][x];
-        if (iterations == maxIterations) {
-          graphics.setColor(Color.BLACK);
-        } else {
-          int colour = (iterations) % 255;
-          graphics.setColor(new Color(colour, colour, colour));
-        }
+        Color current = chunk.iterationData[y][x];
+        graphics.setColor(current);
         graphics.fillRect(x, y, 1, 1);
       }
     }
