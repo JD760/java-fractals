@@ -1,3 +1,5 @@
+package chunk;
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -7,13 +9,13 @@ import java.awt.image.BufferedImage;
  */
 public class ChunkPainter implements Runnable {
   Chunk chunk;
-  BufferedImage image;
+  public BufferedImage image;
   Graphics2D graphics;
   int maxIterations;
   @SuppressWarnings("MemberName")
-  int x;
+  public int x;
   @SuppressWarnings("MemberName")
-  int y;
+  public int y;
 
   /**
    * Create a new Chunk Painter, which maps a chunk to an image

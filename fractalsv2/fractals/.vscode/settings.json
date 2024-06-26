@@ -1,7 +1,10 @@
 {
-    "java.project.sourcePaths": ["src"],
+    "java.project.sourcePaths": [
+        "src"
+    ],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar"
+        "/Users/jacobd/Documents/Projects/Java/Java Fractals/fractalsv2/fractals/lib/hamcrest-core-1.3.jar",
+        "/Users/jacobd/Documents/Projects/Java/Java Fractals/fractalsv2/fractals/lib/junit-4.13.jar"
     ]
 }

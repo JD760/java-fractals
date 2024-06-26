@@ -1,6 +1,9 @@
+package chunk;
+
 import complex.Complex;
 import complex.Orbit;
 import java.awt.Color;
+import settings.GlobalSettings;
 
 /**
  * Represents a region of the viewport, allowing multithreaded computation
@@ -10,14 +13,8 @@ import java.awt.Color;
 public class Chunk implements Runnable {
   final double log2 = Math.log(2);
   final int size;
-  final Fractals type;
-  final int width;
-  final int height;
   final int[] position;
-  final Complex center;
-  final Complex seed;
-  final int maxIterations;
-  final double scale;
+  GlobalSettings settings;
   final double epsilon = Math.pow(10, -6);
   final double aspectRatio;
   final double scaleConstant;
@@ -27,30 +24,16 @@ public class Chunk implements Runnable {
    * Create a new Chunk to represent a portion of the viewport.
 
    * @param size - the size of the chunk in pixels, e.g. 32x32px
-   * @param type - A value in the fractals enumeration representing the fractal to be processed
    * @param position - the position (x, y) representing the top left corner of the chunk
-   * @param width - the width of the entire viewport
-   * @param height - the height of the entire viewport
-   * @param center - the center co-ordinate x + yi in complex space
-   * @param maxIterations - the number of iterations before we determine that a point
-    never escapes - higher maximum means longer processing times but (much) higher quality
-   * @param scale - the scale/zoom factor of the image, larger scale means higher zoom
    */
-  public Chunk(int size, Fractals type, int[] position, int width, int height,
-      Complex center, Complex seed, int maxIterations, double scale) {
+  public Chunk(int size, int[] position, GlobalSettings settings) {
     this.size = size;
-    this.type = type;
-    this.width = width;
-    this.height = height;
     this.position = position;
-    this.center = center;
-    this.seed = seed;
-    this.maxIterations = maxIterations;
-    this.scale = scale;
+    this.settings = settings;
     // compute the aspect ratio and scale constant separately as these are values
     // that are reused millions of times in computing the iteration data
-    aspectRatio = width / (double) height;
-    scaleConstant = aspectRatio / scale;
+    aspectRatio = settings.width / (double) settings.height;
+    scaleConstant = aspectRatio / settings.scale;
     iterationData = new Color[size][size];
   }
 
@@ -60,9 +43,10 @@ public class Chunk implements Runnable {
    */
   @Override
   public void run() {
+    Complex seed = settings.seed;
     for (int y = position[1]; y < position[1] + size; y++) {
       for (int x = position[0]; x < position[0] + size; x++) {
-        switch (type) {
+        switch (settings.mode) {
           case MANDELBROT:
             iterationData[y - position[1]][x - position[0]] = mandelbrotPoint(x, y);
             break;
@@ -87,16 +71,16 @@ public class Chunk implements Runnable {
     Complex z = new Complex(0, 0);
     // compute the current location translated into the complex plane
     // and use this as the seed
-    double x1 = x / (double) width;
-    double y1 = y / (double) height;
+    double x1 = x / (double) settings.width;
+    double y1 = y / (double) settings.height;
     c.setRe((3 * x1 - 2) * scaleConstant);
-    c.setIm((3 * y1 - 1.25) / scale);
+    c.setIm((3 * y1 - 1.25) / settings.scale);
 
     int iterations = 0;
-    while (iterations < maxIterations) {
+    while (iterations < settings.maxIterations) {
       z.square();
       z.add(c);
-      z.subtract(center);
+      z.subtract(settings.center);
 
       if (z.magnitude() > 4) {
         break;
@@ -105,7 +89,7 @@ public class Chunk implements Runnable {
     }
     
     // perform the convergence test on each interior point
-    if (iterations == maxIterations) {
+    if (iterations == settings.maxIterations) {
       return Color.BLACK;
     }
     double continuousIndex = iterations + 1 - ((log2 / z.magnitude()) / log2);
@@ -121,16 +105,16 @@ public class Chunk implements Runnable {
     Complex z = new Complex(0, 0);
     // compute the current location translated into the complex plane
     // and use this as the seed
-    double x1 = x / (double) width;
-    double y1 = y / (double) height;
+    double x1 = x / (double) settings.width;
+    double y1 = y / (double) settings.height;
     c.setRe((3 * x1 - 2) * scaleConstant);
-    c.setIm((3 * y1 - 1.25) / scale);
+    c.setIm((3 * y1 - 1.25) / settings.scale);
 
     int iterations = 0;
-    while (iterations < maxIterations) {
+    while (iterations < settings.maxIterations) {
       z.square();
       z.add(c);
-      z.subtract(center);
+      z.subtract(settings.center);
 
       if (z.magnitude() > 4) {
         if (iterations % 2 == 0) {
@@ -140,7 +124,7 @@ public class Chunk implements Runnable {
       }
       iterations++;
     }
-    if (iterations == maxIterations) {
+    if (iterations == settings.maxIterations) {
       return Color.BLACK;
     }
     return new Color(iterations % 255);
@@ -148,12 +132,15 @@ public class Chunk implements Runnable {
 
   private Color juliaPoint(int x, int y, Complex seed) {
     Complex z = new Complex(0, 0);
-    z.setRe((((x / (double) width) * (4 * aspectRatio)) / scale) - ((2 * aspectRatio) / scale));
-    z.setIm((((y / (double) height)) * 4 / scale) - (2 / scale));
-    z.subtract(center);
+    double x1 = x / (double) settings.width;
+    double y1 = y / (double) settings.height;
+    z.setRe((4 * x1 - 2) * scaleConstant);
+    //z.setRe(((x1 * (4 * aspectRatio)) / scale) - ((2 * aspectRatio) / scale));
+    z.setIm((4 * y1 - 2) / settings.scale);
+    z.subtract(settings.center);
 
     int iterations = 0;
-    while (iterations < maxIterations) {
+    while (iterations < settings.maxIterations) {
       z.square();
       z.add(seed);
 
@@ -162,7 +149,7 @@ public class Chunk implements Runnable {
       }
       iterations++;
     }
-    if (iterations == maxIterations) {
+    if (iterations == settings.maxIterations) {
       return Color.BLACK;
     }
 
@@ -176,12 +163,14 @@ public class Chunk implements Runnable {
 
   private Color juliaDivergence(int x, int y, Complex seed) {
     Complex z = new Complex(0, 0);
-    z.setRe((((x / (double) width) * (4 * aspectRatio)) / scale) - ((2 * aspectRatio) / scale));
-    z.setIm((((y / (double) height)) * 4 / scale) - (2 / scale));
-
-    z.subtract(center);
+    double x1 = x / (double) settings.width;
+    double y1 = y / (double) settings.height;
+    z.setRe((4 * x1 - 2) * scaleConstant);
+    z.setIm((4 * y1 - 2) / settings.scale);
+    z.subtract(settings.center);
+  
     int iterations = 0;
-    while (iterations < maxIterations) {
+    while (iterations < settings.maxIterations) {
       z.square();
       z.add(seed);
 
@@ -201,14 +190,14 @@ public class Chunk implements Runnable {
     Complex c = new Complex(0, 0);
     // compute the current location translated into the complex plane
     // and use this as the seed
-    double x1 = x / (double) width;
-    double y1 = y / (double) height;
+    double x1 = x / (double) settings.width;
+    double y1 = y / (double) settings.height;
     c.setRe((3 * x1 - 2) * scaleConstant);
-    c.setIm((3 * y1 - 1.25) / scale);
+    c.setIm((3 * y1 - 1.25) / settings.scale);
 
 
     //c.subtract(center);
-    Orbit orbit = new Orbit(c, maxIterations);
+    Orbit orbit = new Orbit(c, settings.maxIterations);
     int result = orbit.convergenceTest();
 
     switch (result) {

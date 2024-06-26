@@ -1,6 +1,9 @@
+import gui.FractalPanel;
+import gui.Frame;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.SwingUtilities;
+import settings.GlobalSettings;
 
 /**
  * Contains driver code for setting up the UI and running the application.
@@ -25,12 +28,16 @@ public class App {
     int height = (int) screenSize.getHeight();
     // create the largest square that can fit on the display
     //int viewportSize = Math.min(height - (height % 32), width - (width % 32));
+    GlobalSettings settings = new GlobalSettings();
+    settings.width = width - (width % 32);
+    settings.height = height - (height % 32);
 
-    FractalPanel panel = new FractalPanel(width - (width % 32), height - (height % 32));
-    Frame f = new Frame(panel);
+    FractalPanel panel = new FractalPanel(settings);
+    Frame f = new Frame(panel, settings);
     f.setSize(width, height);
 
     //f.add(panel);
     //f.setVisible(true);
   }
 }
+

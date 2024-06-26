@@ -50,7 +50,7 @@ public class Complex {
 
   @Override
   public String toString() {
-    if (im > 0) {
+    if (im >= 0) {
       return re + " + " + im + "i";
     }
     return re + " - " + (-1 * im) + "i";
