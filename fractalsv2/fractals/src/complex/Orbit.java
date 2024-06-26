@@ -12,7 +12,7 @@ public class Orbit {
   Complex c;
   Complex[] previous;
   int maxIterations;
-  private final double epsilon = 0.00000001;
+  private final double epsilon = 0.000001;
 
   /**
    * Create a new orbit based on the seed point c.

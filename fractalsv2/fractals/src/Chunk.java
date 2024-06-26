@@ -1,4 +1,5 @@
 import complex.Complex;
+import complex.Orbit;
 import java.awt.Color;
 
 /**
@@ -7,6 +8,7 @@ import java.awt.Color;
  * the complete fractal image.
  */
 public class Chunk implements Runnable {
+  final double log2 = Math.log(2);
   final int size;
   final Fractals type;
   final int width;
@@ -16,7 +18,6 @@ public class Chunk implements Runnable {
   final Complex seed;
   final int maxIterations;
   final double scale;
-  final int boxSize = 3;
   final double epsilon = Math.pow(10, -6);
   final double aspectRatio;
   final double scaleConstant;
@@ -53,6 +54,10 @@ public class Chunk implements Runnable {
     iterationData = new Color[size][size];
   }
 
+  /**
+   * Determine which colouring method to use for each pixel of the fractal image.
+   * The user can switch between different modes with their own drawing functions.
+   */
   @Override
   public void run() {
     for (int y = position[1]; y < position[1] + size; y++) {
@@ -66,6 +71,9 @@ public class Chunk implements Runnable {
             break;
           case JULIA:
             iterationData[y - position[1]][x - position[0]] = juliaPoint(x, y, seed);
+            break;
+          case JULIA_DIVERGENCE:
+            iterationData[y - position[1]][x - position[0]] = juliaDivergence(x, y, seed);
             break;
           default:
             break;
@@ -95,7 +103,17 @@ public class Chunk implements Runnable {
       }
       iterations++;
     }
-    return new Color(iterations % 255, iterations % 255, iterations % 255);
+    
+    // perform the convergence test on each interior point
+    if (iterations == maxIterations) {
+      return Color.BLACK;
+    }
+    double continuousIndex = iterations + 1 - ((log2 / z.magnitude()) / log2);
+    int red = (int) Math.abs((Math.sin(0.01 * continuousIndex + 4) * 230) + 25);
+    int blue = (int) Math.abs((Math.sin(0.016 * continuousIndex + 2) * 230) + 25);
+    int green = (int) Math.abs((Math.sin(0.01 * continuousIndex + 1) * 230) + 25);
+    //return new Color(iterations % 255, iterations % 255, iterations % 255);
+    return new Color(red, blue, green);
   }
 
   private Color divergenceScheme(int x, int y) {
@@ -132,13 +150,40 @@ public class Chunk implements Runnable {
     Complex z = new Complex(0, 0);
     z.setRe((((x / (double) width) * (4 * aspectRatio)) / scale) - ((2 * aspectRatio) / scale));
     z.setIm((((y / (double) height)) * 4 / scale) - (2 / scale));
+    z.subtract(center);
 
     int iterations = 0;
-    z.add(seed);
     while (iterations < maxIterations) {
       z.square();
-      //z.add(seed);
-      z.subtract(center);
+      z.add(seed);
+
+      if (z.magnitude() > 4) {
+        break;
+      }
+      iterations++;
+    }
+    if (iterations == maxIterations) {
+      return Color.BLACK;
+    }
+
+    double continuousIndex = iterations + 1 - ((log2 / z.magnitude()) / log2);
+    int red = (int) Math.abs((Math.sin(0.01 * continuousIndex + 4) * 230) + 25);
+    int blue = (int) Math.abs((Math.sin(0.016 * continuousIndex + 2) * 230) + 25);
+    int green = (int) Math.abs((Math.sin(0.01 * continuousIndex + 1) * 230) + 25);
+    //return new Color(iterations % 255, iterations % 255, iterations % 255);
+    return new Color(red, blue, green);
+  } 
+
+  private Color juliaDivergence(int x, int y, Complex seed) {
+    Complex z = new Complex(0, 0);
+    z.setRe((((x / (double) width) * (4 * aspectRatio)) / scale) - ((2 * aspectRatio) / scale));
+    z.setIm((((y / (double) height)) * 4 / scale) - (2 / scale));
+
+    z.subtract(center);
+    int iterations = 0;
+    while (iterations < maxIterations) {
+      z.square();
+      z.add(seed);
 
       if (z.magnitude() > 4) {
         if (iterations % 2 == 0) {
@@ -149,5 +194,34 @@ public class Chunk implements Runnable {
       iterations++;
     }
     return new Color(iterations % 255);
+  }
+
+  @SuppressWarnings("unused")
+  private Color convergenceScheme(int x, int y) {
+    Complex c = new Complex(0, 0);
+    // compute the current location translated into the complex plane
+    // and use this as the seed
+    double x1 = x / (double) width;
+    double y1 = y / (double) height;
+    c.setRe((3 * x1 - 2) * scaleConstant);
+    c.setIm((3 * y1 - 1.25) / scale);
+
+
+    //c.subtract(center);
+    Orbit orbit = new Orbit(c, maxIterations);
+    int result = orbit.convergenceTest();
+
+    switch (result) {
+      case 1:
+        return Color.CYAN;
+      case 2:
+        return Color.BLUE;
+      case 3:
+        return Color.GREEN;
+      case 4:
+        return Color.PINK;
+      default:
+        return Color.BLACK;
+    }
   }
 }

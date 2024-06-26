@@ -163,14 +163,14 @@ public class FractalPanel extends JPanel {
 
   Action moveUp = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      center.setRe(center.re() - (0.1 / scale));
+      center.setIm(center.im() + (0.1 / scale));
       repaint();
     }
   };
 
   Action moveDown = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      center.setIm(center.im() + (0.1 / scale));
+      center.setIm(center.im() - (0.1 / scale));
       repaint();
     }
   };

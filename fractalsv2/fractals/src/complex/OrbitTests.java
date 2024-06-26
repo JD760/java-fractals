@@ -27,7 +27,7 @@ public class OrbitTests {
 
   @Test
   public void test2Cycle() {
-    Orbit o1 = new Orbit(new Complex(-1.103, 0.046), 1000);
+    Orbit o1 = new Orbit(new Complex(0.9291666666666667, -0.019936708860759378), 1000);
     assertEquals(2, o1.convergenceTest());
   }
 
@@ -35,6 +35,12 @@ public class OrbitTests {
   public void test3Cycle() {
     Orbit o1 = new Orbit(new Complex(-0.129, 0.731), 1000);
     assertEquals(3, o1.convergenceTest());
+  }
+
+  @Test
+  public void testValidPoint() {
+    Orbit o1 = new Orbit(new Complex(-0.9833333333333334, 0.17104430379746838), 1000);
+    assertEquals(2, o1.convergenceTest());
   }
 
   @Test
