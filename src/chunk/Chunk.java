@@ -46,9 +46,9 @@ public class Chunk implements Runnable {
    * @return - a 2D array of chunks that have been processed and are ready to be used
       in the painting pipeline.
    */
-  public static Chunk[][] createChunks(GlobalSettings settings) {
-    int chunksX = settings.width / 32;
-    int chunksY = settings.height / 32;
+  public static Chunk[][] createChunks(int width, int height, GlobalSettings settings) {
+    int chunksX = width / 32;
+    int chunksY = height / 32;
     final long startTime = System.nanoTime();
 
     Chunk[][] chunks = new Chunk[chunksY][chunksX];

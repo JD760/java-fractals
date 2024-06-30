@@ -50,8 +50,8 @@ public class ChunkPainter implements Runnable {
    * @param g - the graphics object for the panel or image being drawn to
    * @param settings - the settings and values global to the entire project
    */
-  public static void paintChunks(Graphics g, GlobalSettings settings) {
-    Chunk[][] chunks = Chunk.createChunks(settings);
+  public static void paintChunks(int width, int height, Graphics g, GlobalSettings settings) {
+    Chunk[][] chunks = Chunk.createChunks(width, height, settings);
 
     ConcurrentLinkedQueue<ChunkPainter> painters = new ConcurrentLinkedQueue<>();
     ExecutorService threadpool = Executors.newFixedThreadPool(10);

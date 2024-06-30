@@ -1,9 +1,9 @@
 package gui;
+
+import gui.menu.MenuBar;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import javax.swing.JFrame;
-
-import menu.MenuBar;
 import settings.GlobalSettings;
 
 /**

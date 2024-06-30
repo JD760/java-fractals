@@ -59,7 +59,7 @@ public class FractalPanel extends JPanel {
   @Override
   public void paintComponent(Graphics g) {
     final long startTime = System.nanoTime();
-    ChunkPainter.paintChunks(g, settings);
+    ChunkPainter.paintChunks(settings.width, settings.height, g, settings);
 
     if (repaintCenter) {
       g.setColor(Color.RED);
