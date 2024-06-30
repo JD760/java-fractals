@@ -3,6 +3,8 @@ package chunk;
 import complex.Complex;
 import complex.Orbit;
 import java.awt.Color;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import settings.GlobalSettings;
 
 /**
@@ -35,6 +37,33 @@ public class Chunk implements Runnable {
     aspectRatio = settings.width / (double) settings.height;
     scaleConstant = aspectRatio / settings.scale;
     iterationData = new Color[size][size];
+  }
+
+  /**
+   * Create and process the iteration data for all chunks in an image.
+
+   * @param settings - the collection of settings and values global to the whole project
+   * @return - a 2D array of chunks that have been processed and are ready to be used
+      in the painting pipeline.
+   */
+  public static Chunk[][] createChunks(GlobalSettings settings) {
+    int chunksX = settings.width / 32;
+    int chunksY = settings.height / 32;
+    final long startTime = System.nanoTime();
+
+    Chunk[][] chunks = new Chunk[chunksY][chunksX];
+    ExecutorService threadpool = Executors.newFixedThreadPool(10);
+
+    for (int y = 0; y < chunksY; y++) {
+      for (int x = 0; x < chunksX; x++) {
+        chunks[y][x] = new Chunk(32, new int[] {32 * x, 32 * y}, settings);
+        threadpool.execute(chunks[y][x]);
+      }
+    }
+
+    threadpool.close();
+    System.out.println("Iteration Time: " + ((System.nanoTime() - startTime) / 1000000.0) + "ms");
+    return chunks;
   }
 
   /**

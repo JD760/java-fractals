@@ -1,8 +1,13 @@
 package chunk;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import settings.GlobalSettings;
 
 /**
  * Used to paint a given chunk to an image which can then be drawn onto the viewport.
@@ -35,6 +40,38 @@ public class ChunkPainter implements Runnable {
     this.image = image;
   
     graphics = image.createGraphics();
+  }
+
+  /**
+   * Runs the iteration data pipeline before painting all chunks through a parallelised approach
+   * that works by drawing to an independent image for each chunk, then stitching the resulting
+   * images together, allowing for thread safe drawing.
+
+   * @param g - the graphics object for the panel or image being drawn to
+   * @param settings - the settings and values global to the entire project
+   */
+  public static void paintChunks(Graphics g, GlobalSettings settings) {
+    Chunk[][] chunks = Chunk.createChunks(settings);
+
+    ConcurrentLinkedQueue<ChunkPainter> painters = new ConcurrentLinkedQueue<>();
+    ExecutorService threadpool = Executors.newFixedThreadPool(10);
+
+    for (int y = 0; y < chunks.length; y++) {
+      for (int x = 0; x < chunks[0].length; x++) {
+        //paintChunk(chunks[y][x], g);
+        BufferedImage image = new BufferedImage(32, 32, BufferedImage.TYPE_3BYTE_BGR);
+        ChunkPainter painter = new ChunkPainter(
+            chunks[y][x], image, settings.maxIterations, 32 * x, 32 * y);
+        threadpool.execute(painter);
+        painters.add(painter);
+      }
+    }
+
+    threadpool.close();
+    while (!painters.isEmpty()) {
+      ChunkPainter painter = painters.poll();
+      g.drawImage(painter.image, painter.x, painter.y, null);
+    }
   }
 
   @Override
