@@ -3,6 +3,8 @@ package gui;
 import chunk.Chunk;
 import chunk.ChunkPainter;
 import complex.Complex;
+import gui.menu.ContextMenu;
+
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -35,8 +37,15 @@ public class FractalPanel extends JPanel {
   }
 
   MouseAdapter mouseListener = new MouseAdapter() {
+    private ContextMenu menu = new ContextMenu(settings);
+
     @Override
     public void mousePressed(MouseEvent e) {
+      if (e.isPopupTrigger()) {
+        menu.show(e.getComponent(), e.getX(), e.getY());
+        return;
+      }
+
       Complex center = settings.center;
       double scale = settings.scale;
       // we only want click-to-zoom to work within the bounds of the image panel
@@ -52,6 +61,14 @@ public class FractalPanel extends JPanel {
       System.out.println("Center: " + center.toString());
       repaintCenter = true;
       repaint();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+      if (e.isPopupTrigger()) {
+        menu.show(e.getComponent(), e.getX(), e.getY());
+        return;
+      }
     }
   };
   

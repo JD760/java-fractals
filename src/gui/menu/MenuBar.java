@@ -10,7 +10,7 @@ import settings.GlobalSettings;
  */
 public class MenuBar extends JMenuBar {
   private JMenu fileMenu;
-  private JMenu modeMenu;
+  private JMenu toolsMenu;
   private InfoMenu infoMenu;
 
   /**
@@ -20,11 +20,11 @@ public class MenuBar extends JMenuBar {
    */
   public MenuBar(GlobalSettings settings) {
     fileMenu = new FileMenu(settings);
-    modeMenu = new JMenu("Mode");
+    toolsMenu = new ToolsMenu(settings);
     infoMenu = new InfoMenu(settings);
 
     add(fileMenu);
-    add(modeMenu);
+    add(toolsMenu);
     add(infoMenu);
   }
 

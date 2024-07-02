@@ -4,9 +4,6 @@ import complex.Complex;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
-import javax.swing.KeyStroke;
 import settings.Fractals;
 import settings.GlobalSettings;
 
@@ -23,34 +20,9 @@ public class Actions {
    */
   public Actions(GlobalSettings settings) {
     this.settings = settings;
-    InputMap imap = settings.panel.getInputMap();
-    ActionMap amap = settings.panel.getActionMap();
-
-    imap.put(KeyStroke.getKeyStroke("UP"), "moveUp");
-    amap.put("moveUp", moveUp);
-    imap.put(KeyStroke.getKeyStroke("DOWN"), "moveDown");
-    amap.put("moveDown", moveDown);
-    imap.put(KeyStroke.getKeyStroke("LEFT"), "moveLeft");
-    amap.put("moveLeft", moveLeft);
-    imap.put(KeyStroke.getKeyStroke("RIGHT"), "moveRight");
-    amap.put("moveRight", moveRight);
-    imap.put(KeyStroke.getKeyStroke("Z"), "zoomIn");
-    amap.put("zoomIn", zoomIn);
-    imap.put(KeyStroke.getKeyStroke("X"), "zoomOut");
-    amap.put("zoomOut", zoomOut);
-    imap.put(KeyStroke.getKeyStroke("C"), "resetZoom");
-    amap.put("resetZoom", resetZoom);
-    imap.put(KeyStroke.getKeyStroke("V"), "repaintCanvas");
-    amap.put("repaintCanvas", repaintCanvas);
-    imap.put(KeyStroke.getKeyStroke("I"), "increaseIterations");
-    amap.put("increaseIterations", increaseIterations);
-    imap.put(KeyStroke.getKeyStroke("M"), "nextMode");
-    amap.put("nextMode", nextMode);
-    imap.put(KeyStroke.getKeyStroke("N"), "prevMode");
-    amap.put("prevMode", prevMode);
   }
 
-  Action moveUp = new AbstractAction() {
+  public Action moveUp = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       Complex center = settings.center;
       center.setIm(center.im() + (0.1 / settings.scale));
@@ -58,7 +30,7 @@ public class Actions {
     }
   };
 
-  Action moveDown = new AbstractAction() {
+  public Action moveDown = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       Complex center = settings.center;
       center.setIm(center.im() - (0.1 / settings.scale));
@@ -66,7 +38,7 @@ public class Actions {
     }
   };
 
-  Action moveLeft = new AbstractAction() {
+  public Action moveLeft = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       Complex center = settings.center;
       center.setRe(center.re() - (0.1 / settings.scale));
@@ -74,7 +46,7 @@ public class Actions {
     }
   };
 
-  Action moveRight = new AbstractAction() {
+  public Action moveRight = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       Complex center = settings.center;
       center.setRe(center.re() +  (0.1 / settings.scale));
@@ -82,7 +54,7 @@ public class Actions {
     }
   };
 
-  Action zoomIn = new AbstractAction() {
+  public Action zoomIn = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       settings.scale *= 2.0;
       settings.panel.repaint();
@@ -90,7 +62,7 @@ public class Actions {
     }
   };
 
-  Action zoomOut = new AbstractAction() {
+  public Action zoomOut = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       if (settings.scale > 0.1) {
         settings.scale /= 2.0;
@@ -100,7 +72,7 @@ public class Actions {
     }
   };
 
-  Action resetZoom = new AbstractAction() {
+  public Action resetZoom = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       settings.scale = 1;
       settings.center = new Complex();
@@ -109,20 +81,20 @@ public class Actions {
     }
   };
 
-  Action repaintCanvas = new AbstractAction() {
+  public Action repaintCanvas = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       settings.panel.repaint();
     }
   };
 
-  Action increaseIterations = new AbstractAction() {
+  public Action increaseIterations = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       settings.maxIterations *= 2;
       settings.panel.repaint();
     }
   };
 
-  Action nextMode = new AbstractAction() {
+  public Action nextMode = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       Fractals[] values = Fractals.values();
       int index = (settings.mode.ordinal() + 1) % values.length;
@@ -131,7 +103,7 @@ public class Actions {
     }
   };
 
-  Action prevMode = new AbstractAction() {
+  public Action prevMode = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       Fractals[] values = Fractals.values();
       int index = (settings.mode.ordinal() - 1) % values.length;

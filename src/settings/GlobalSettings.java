@@ -2,7 +2,7 @@ package settings;
 
 import complex.Complex;
 import gui.FractalPanel;
-import menu.MenuBar;
+import gui.menu.MenuBar;
 
 /**
  * Contains settings global to the entire project, needs to be top level to allow

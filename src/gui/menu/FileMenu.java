@@ -1,6 +1,7 @@
 package gui.menu;
 
 import chunk.ChunkPainter;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -38,7 +39,7 @@ public class FileMenu extends JMenu {
     super("File");
     this.settings = settings;
 
-    dimensionsPanel.add(new JLabel("Enter image dimensions in pixels, default is 4k.\n"));
+    dimensionsPanel.setLayout(new GridLayout(2, 2));
     dimensionsPanel.add(new JLabel("x: "));
     dimensionsPanel.add(widthField);
     dimensionsPanel.add(Box.createHorizontalStrut(15));
@@ -54,7 +55,9 @@ public class FileMenu extends JMenu {
           settings.panel,
           dimensionsPanel,
           "Enter image dimensions",
-          JOptionPane.OK_CANCEL_OPTION
+          JOptionPane.OK_CANCEL_OPTION,
+          JOptionPane.QUESTION_MESSAGE,
+          null
       );
       if (result == JOptionPane.OK_OPTION) {
         boolean valid = testValidInput(widthField) && testValidInput(heightField);
@@ -65,6 +68,8 @@ public class FileMenu extends JMenu {
               "Dimension error",
               JOptionPane.ERROR_MESSAGE
           );
+          widthField.setText("3840");
+          heightField.setText("2144");
           return;
         }
         // we can guarantee now that the width and height may be parsed
