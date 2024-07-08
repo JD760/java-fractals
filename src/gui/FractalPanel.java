@@ -4,7 +4,6 @@ import chunk.Chunk;
 import chunk.ChunkPainter;
 import complex.Complex;
 import gui.menu.ContextMenu;
-
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -16,7 +15,7 @@ import settings.GlobalSettings;
  * Custom class extending the JPanel to create the UI for the fractal viewer.
  */
 public class FractalPanel extends JPanel {
-  GlobalSettings settings;
+  GlobalSettings settings = new GlobalSettings();
   int width;
   int height;
   boolean repaintCenter = false;
@@ -33,11 +32,15 @@ public class FractalPanel extends JPanel {
     this.settings = settings;
     settings.panel = this;
     new Actions(settings);
-    addMouseListener(mouseListener);
+    addMouseListener(new ClickListener(settings));
   }
 
-  MouseAdapter mouseListener = new MouseAdapter() {
-    private ContextMenu menu = new ContextMenu(settings);
+  class ClickListener extends MouseAdapter {
+    private ContextMenu menu;
+
+    public ClickListener(GlobalSettings settings) {
+      menu = new ContextMenu(settings);
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {

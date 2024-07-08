@@ -1,7 +1,11 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import gui.FractalPanel;
 import gui.Frame;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
 import javax.swing.SwingUtilities;
 import settings.GlobalSettings;
 
@@ -15,6 +19,17 @@ public class App {
    * @param args - currently unused
    */
   public static void main(String[] args) {
+    try {
+      new File("src/config/pointLog.json").createNewFile();
+      ObjectMapper map = new ObjectMapper();
+      ObjectNode jsonNode = map.createObjectNode();
+      jsonNode.put("points", "");
+      map.writeValue(new File("src/config/pointLog.json"), jsonNode);
+    } catch (IOException e) {
+      e.printStackTrace();
+      return;
+    }
+    
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         createAndShowGui();
