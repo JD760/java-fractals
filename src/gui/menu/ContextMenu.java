@@ -2,6 +2,7 @@ package gui.menu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import gui.Location;
 import gui.interestingpoints.InterestingPoints;
 import gui.interestingpoints.LogPoint;
 import java.awt.event.ActionEvent;
@@ -11,14 +12,13 @@ import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
-import settings.GlobalSettings;
 
 /**
  * The context menu appears when right clicking anywhere on the canvas, and provides
  * quick access to some common options.
  */
 public class ContextMenu extends JPopupMenu {
-  public GlobalSettings settings;
+  public Location location;
   JMenuItem showOrbit;
   JMenuItem logCurrentPoint;
   JMenuItem openPoi;
@@ -26,10 +26,10 @@ public class ContextMenu extends JPopupMenu {
   /**
    * Create a new instance of the context menu.
 
-   * @param settings - global settings and values to the whole project
+   * @param location - Represents a specific point and configuration on the canvas.
    */
-  public ContextMenu(GlobalSettings settings) {
-    this.settings = settings;
+  public ContextMenu(Location location) {
+    this.location = location;
 
     showOrbit = new JMenuItem("Show orbit");
     logCurrentPoint = new JMenuItem("Log Point of Interest");
@@ -47,7 +47,7 @@ public class ContextMenu extends JPopupMenu {
     public void actionPerformed(ActionEvent e) {
       JOptionPane.showMessageDialog(
           openPoi,
-          new InterestingPoints(settings),
+          new InterestingPoints(location),
           "test",
           JOptionPane.PLAIN_MESSAGE
       );
@@ -76,13 +76,11 @@ public class ContextMenu extends JPopupMenu {
 
       ObjectMapper map = new ObjectMapper();
       ObjectNode jsonNode = map.createObjectNode();
-      jsonNode.put("width", settings.width);
-      jsonNode.put("height", settings.height);
-      jsonNode.put("maxIterations", settings.maxIterations);
-      jsonNode.put("Re(center)", settings.center.re());
-      jsonNode.put("Im(center)", settings.center.im());
-      jsonNode.put("mode", settings.mode.toString());
-      jsonNode.put("scale", settings.scale);
+      jsonNode.put("maxIterations", location.maxIterations);
+      jsonNode.put("Re(center)", location.center.re());
+      jsonNode.put("Im(center)", location.center.im());
+      jsonNode.put("mode", location.mode.toString());
+      jsonNode.put("scale", location.scale);
       try {
         map.writeValue(new File("src/config/pointLog.json"), jsonNode);
       } catch (IOException e1) {

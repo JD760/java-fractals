@@ -1,8 +1,8 @@
 package gui.interestingpoints;
 
+import gui.Location;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import settings.GlobalSettings;
 
 /**
  * Represents the Interesting Points feature, which allows the user to log
@@ -11,7 +11,7 @@ import settings.GlobalSettings;
 public class InterestingPoints extends JPanel {
   private JLabel testLabel = new JLabel("Hello World!");
 
-  public InterestingPoints(GlobalSettings settings) {
+  public InterestingPoints(Location location) {
     add(testLabel);
   }
 }

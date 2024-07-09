@@ -1,5 +1,6 @@
 package gui.menu;
 
+import gui.Location;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -17,6 +18,7 @@ import settings.GlobalSettings;
  */
 public class InfoMenu extends JMenu {
   private GlobalSettings settings;
+  private Location location;
   private JMenuItem centerLabel = new JMenuItem();
   private JMenuItem scaleLabel = new JMenuItem();
   private JMenuItem maxIterationsLabel = new JMenuItem();
@@ -33,6 +35,7 @@ public class InfoMenu extends JMenu {
   public InfoMenu(GlobalSettings settings) {
     super("Info");
     this.settings = settings;
+    this.location = settings.location;
     add(centerLabel);
     add(scaleLabel);
     add(maxIterationsLabel);
@@ -49,26 +52,26 @@ public class InfoMenu extends JMenu {
    * before redrawing the GUI.
    */
   public void refresh() {
-    centerLabel.setText("Center: " + settings.center.toString());
-    scaleLabel.setText("Scale: " + Double.toString(settings.scale));
-    maxIterationsLabel.setText("Max Iterations: " + settings.maxIterations);
-    fractalTypeLabel.setText("Mode: " + Fractals.toString(settings.mode));
-    seedLabel.setText("Seed: " + settings.seed.toString());
+    centerLabel.setText("Center: " + location.center.toString());
+    scaleLabel.setText("Scale: " + Double.toString(location.scale));
+    maxIterationsLabel.setText("Max Iterations: " + location.maxIterations);
+    fractalTypeLabel.setText("Mode: " + Fractals.toString(location.mode));
+    seedLabel.setText("Seed: " + location.seed.toString());
     copySettings.setAction(new CopyAction());
     copySettings.setText("Copy Settings");
     seedLabel.setVisible(
-        settings.mode == Fractals.JULIA || settings.mode == Fractals.JULIA_DIVERGENCE);
+        location.mode == Fractals.JULIA || location.mode == Fractals.JULIA_DIVERGENCE);
   }
 
   class CopyAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
       StringBuilder settingsStr = new StringBuilder("{");
-      settingsStr.append(settings.center.re() + ",");
-      settingsStr.append(settings.center.im() + ",");
-      settingsStr.append(settings.scale + ",");
-      settingsStr.append(settings.maxIterations + ",");
-      settingsStr.append(settings.mode.toString() + "}");
+      settingsStr.append(location.center.re() + ",");
+      settingsStr.append(location.center.im() + ",");
+      settingsStr.append(location.scale + ",");
+      settingsStr.append(location.maxIterations + ",");
+      settingsStr.append(location.mode.toString() + "}");
 
       Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
       clipboard.setContents(new StringSelection(settingsStr.toString()), null);
@@ -97,19 +100,19 @@ public class InfoMenu extends JMenu {
       }
 
       try {
-        settings.center.setRe(Double.parseDouble(settingsStr[0]));
-        settings.center.setIm(Double.parseDouble(settingsStr[1]));
-        settings.scale = Double.parseDouble(settingsStr[2]);
-        settings.maxIterations = Integer.parseInt(settingsStr[3]);
+        location.center.setRe(Double.parseDouble(settingsStr[0]));
+        location.center.setIm(Double.parseDouble(settingsStr[1]));
+        location.scale = Double.parseDouble(settingsStr[2]);
+        location.maxIterations = Integer.parseInt(settingsStr[3]);
       } catch (NumberFormatException nfe) {
         System.out.println(nfe);
         invalidSettings(source, "Invalid number format...");
         return;
       }
 
-      settings.mode = Fractals.getElement(settingsStr[4]);
-      if (settings.mode == null) {
-        settings.mode = Fractals.MANDELBROT;
+      location.mode = Fractals.getElement(settingsStr[4]);
+      if (location.mode == null) {
+        location.mode = Fractals.MANDELBROT;
       }
 
       settings.panel.repaint();

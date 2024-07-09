@@ -39,7 +39,7 @@ public class FractalPanel extends JPanel {
     private ContextMenu menu;
 
     public ClickListener(GlobalSettings settings) {
-      menu = new ContextMenu(settings);
+      menu = new ContextMenu(settings.location);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class FractalPanel extends JPanel {
         return;
       }
 
-      Complex center = settings.center;
-      double scale = settings.scale;
+      Complex center = settings.location.center;
+      double scale = settings.location.scale;
       // we only want click-to-zoom to work within the bounds of the image panel
       if (e.getX() > width || e.getY() > height) {
         return;
@@ -59,7 +59,7 @@ public class FractalPanel extends JPanel {
       // position of the mouse
       center.setRe(center.re() - ((((e.getX() / (double) width) * 3) / scale) - (2 / scale)));
       center.setIm(center.im() - ((((e.getY() / (double) height) * 3) / scale) - (1.25 / scale)));
-      settings.scale *= 2;
+      settings.location.scale *= 2;
       centerCoords = new int[]{e.getX(), e.getY()};
       System.out.println("Center: " + center.toString());
       repaintCenter = true;
@@ -73,22 +73,17 @@ public class FractalPanel extends JPanel {
         return;
       }
     }
-  };
+  }
   
 
   @Override
   public void paintComponent(Graphics g) {
-    final long startTime = System.nanoTime();
     ChunkPainter.paintChunks(settings.width, settings.height, g, settings);
-
     if (repaintCenter) {
       g.setColor(Color.RED);
       g.fillRect(centerCoords[0] - 1, centerCoords[1] - 1, 3, 3);
       repaintCenter = false;
     }
-    
     settings.menu.refreshMenu();
-    System.out.println("Painting Time: " + ((System.nanoTime() - startTime) / 1000000.0) + "ms");
-    System.out.println("--------------------");
   }
 }

@@ -12,6 +12,7 @@ import settings.GlobalSettings;
  */
 public class Actions {
   GlobalSettings settings;
+  Location location;
 
   /**
    * Add all keybinds and actions to the input/action map so they can be registered to the panel.
@@ -20,63 +21,64 @@ public class Actions {
    */
   public Actions(GlobalSettings settings) {
     this.settings = settings;
+    this.location = settings.location;
   }
 
   public Action moveUp = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      Complex center = settings.center;
-      center.setIm(center.im() + (0.1 / settings.scale));
+      Complex center = location.center;
+      center.setIm(center.im() + (0.1 / location.scale));
       settings.panel.repaint();
     }
   };
 
   public Action moveDown = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      Complex center = settings.center;
-      center.setIm(center.im() - (0.1 / settings.scale));
+      Complex center = location.center;
+      center.setIm(center.im() - (0.1 / location.scale));
       settings.panel.repaint();
     }
   };
 
   public Action moveLeft = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      Complex center = settings.center;
-      center.setRe(center.re() - (0.1 / settings.scale));
+      Complex center = location.center;
+      center.setRe(center.re() - (0.1 / location.scale));
       settings.panel.repaint();
     }
   };
 
   public Action moveRight = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      Complex center = settings.center;
-      center.setRe(center.re() +  (0.1 / settings.scale));
+      Complex center = location.center;
+      center.setRe(center.re() +  (0.1 / location.scale));
       settings.panel.repaint();
     }
   };
 
   public Action zoomIn = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      settings.scale *= 2.0;
+      location.scale *= 2.0;
       settings.panel.repaint();
-      System.out.println("Scale: " + settings.scale);
+      System.out.println("Scale: " + location.scale);
     }
   };
 
   public Action zoomOut = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      if (settings.scale > 0.1) {
-        settings.scale /= 2.0;
+      if (location.scale > 0.1) {
+        location.scale /= 2.0;
         settings.panel.repaint();
       }
-      System.out.println("Scale: " + settings.scale);
+      System.out.println("Scale: " + location.scale);
     }
   };
 
   public Action resetZoom = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      settings.scale = 1;
-      settings.center = new Complex();
-      settings.maxIterations = 1000;
+      location.scale = 1;
+      location.center = new Complex();
+      location.maxIterations = 1000;
       settings.panel.repaint();
     }
   };
@@ -89,7 +91,7 @@ public class Actions {
 
   public Action increaseIterations = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
-      settings.maxIterations *= 2;
+      location.maxIterations *= 2;
       settings.panel.repaint();
     }
   };
@@ -97,8 +99,8 @@ public class Actions {
   public Action nextMode = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       Fractals[] values = Fractals.values();
-      int index = (settings.mode.ordinal() + 1) % values.length;
-      settings.mode = values[index];
+      int index = (location.mode.ordinal() + 1) % values.length;
+      location.mode = values[index];
       settings.panel.repaint();
     }
   };
@@ -106,8 +108,8 @@ public class Actions {
   public Action prevMode = new AbstractAction() {
     public void actionPerformed(ActionEvent e) {
       Fractals[] values = Fractals.values();
-      int index = (settings.mode.ordinal() - 1) % values.length;
-      settings.mode = values[index];
+      int index = (location.mode.ordinal() - 1) % values.length;
+      location.mode = values[index];
       settings.panel.repaint();
     }
   };

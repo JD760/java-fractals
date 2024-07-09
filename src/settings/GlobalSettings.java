@@ -1,7 +1,7 @@
 package settings;
 
-import complex.Complex;
 import gui.FractalPanel;
+import gui.Location;
 import gui.menu.MenuBar;
 import java.util.Properties;
 
@@ -12,11 +12,7 @@ import java.util.Properties;
 public class GlobalSettings {
   public int width;
   public int height;
-  public int maxIterations;
-  public Complex center;
-  public Fractals mode;
-  public Complex seed;
-  public double scale;
+  public Location location;
   public FractalPanel panel;
   public MenuBar menu;
 
@@ -24,11 +20,7 @@ public class GlobalSettings {
    * Creates a new global settings object with default values.
    */
   public GlobalSettings() {
-    maxIterations = 1000;
-    center = new Complex();
-    mode = Fractals.MANDELBROT;
-    seed = new Complex(-0.835, 0.232);
-    scale = 1.0;
+    location = new Location();
   }
 
   /**
