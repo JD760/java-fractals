@@ -61,7 +61,7 @@ public class ChunkPainter implements Runnable {
         //paintChunk(chunks[y][x], g);
         BufferedImage image = new BufferedImage(32, 32, BufferedImage.TYPE_3BYTE_BGR);
         ChunkPainter painter = new ChunkPainter(
-            chunks[y][x], image, settings.maxIterations, 32 * x, 32 * y);
+            chunks[y][x], image, settings.location.maxIterations, 32 * x, 32 * y);
         threadpool.execute(painter);
         painters.add(painter);
       }

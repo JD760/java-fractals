@@ -35,7 +35,7 @@ public class Chunk implements Runnable {
     // compute the aspect ratio and scale constant separately as these are values
     // that are reused millions of times in computing the iteration data
     aspectRatio = settings.width / (double) settings.height;
-    scaleConstant = aspectRatio / settings.scale;
+    scaleConstant = aspectRatio / settings.location.scale;
     iterationData = new Color[size][size];
   }
 
@@ -72,10 +72,10 @@ public class Chunk implements Runnable {
    */
   @Override
   public void run() {
-    Complex seed = settings.seed;
+    Complex seed = settings.location.seed;
     for (int y = position[1]; y < position[1] + size; y++) {
       for (int x = position[0]; x < position[0] + size; x++) {
-        switch (settings.mode) {
+        switch (settings.location.mode) {
           case MANDELBROT:
             iterationData[y - position[1]][x - position[0]] = mandelbrotPoint(x, y);
             break;
@@ -103,13 +103,13 @@ public class Chunk implements Runnable {
     double x1 = x / (double) settings.width;
     double y1 = y / (double) settings.height;
     c.setRe((3 * x1 - 2) * scaleConstant);
-    c.setIm((3 * y1 - 1.25) / settings.scale);
+    c.setIm((3 * y1 - 1.25) / settings.location.scale);
 
     int iterations = 0;
-    while (iterations < settings.maxIterations) {
+    while (iterations < settings.location.maxIterations) {
       z.square();
       z.add(c);
-      z.subtract(settings.center);
+      z.subtract(settings.location.center);
 
       if (z.magnitude() > 4) {
         break;
@@ -118,7 +118,7 @@ public class Chunk implements Runnable {
     }
     
     // perform the convergence test on each interior point
-    if (iterations == settings.maxIterations) {
+    if (iterations == settings.location.maxIterations) {
       return Color.BLACK;
     }
     double continuousIndex = iterations + 1 - ((log2 / z.magnitude()) / log2);
@@ -137,13 +137,13 @@ public class Chunk implements Runnable {
     double x1 = x / (double) settings.width;
     double y1 = y / (double) settings.height;
     c.setRe((3 * x1 - 2) * scaleConstant);
-    c.setIm((3 * y1 - 1.25) / settings.scale);
+    c.setIm((3 * y1 - 1.25) / settings.location.scale);
 
     int iterations = 0;
-    while (iterations < settings.maxIterations) {
+    while (iterations < settings.location.maxIterations) {
       z.square();
       z.add(c);
-      z.subtract(settings.center);
+      z.subtract(settings.location.center);
 
       if (z.magnitude() > 4) {
         if (iterations % 2 == 0) {
@@ -153,7 +153,7 @@ public class Chunk implements Runnable {
       }
       iterations++;
     }
-    if (iterations == settings.maxIterations) {
+    if (iterations == settings.location.maxIterations) {
       return Color.BLACK;
     }
     return new Color(iterations % 255);
@@ -165,11 +165,11 @@ public class Chunk implements Runnable {
     double y1 = y / (double) settings.height;
     z.setRe((4 * x1 - 2) * scaleConstant);
     //z.setRe(((x1 * (4 * aspectRatio)) / scale) - ((2 * aspectRatio) / scale));
-    z.setIm((4 * y1 - 2) / settings.scale);
-    z.subtract(settings.center);
+    z.setIm((4 * y1 - 2) / settings.location.scale);
+    z.subtract(settings.location.center);
 
     int iterations = 0;
-    while (iterations < settings.maxIterations) {
+    while (iterations < settings.location.maxIterations) {
       z.square();
       z.add(seed);
 
@@ -178,7 +178,7 @@ public class Chunk implements Runnable {
       }
       iterations++;
     }
-    if (iterations == settings.maxIterations) {
+    if (iterations == settings.location.maxIterations) {
       return Color.BLACK;
     }
 
@@ -195,11 +195,11 @@ public class Chunk implements Runnable {
     double x1 = x / (double) settings.width;
     double y1 = y / (double) settings.height;
     z.setRe((4 * x1 - 2) * scaleConstant);
-    z.setIm((4 * y1 - 2) / settings.scale);
-    z.subtract(settings.center);
+    z.setIm((4 * y1 - 2) / settings.location.scale);
+    z.subtract(settings.location.center);
   
     int iterations = 0;
-    while (iterations < settings.maxIterations) {
+    while (iterations < settings.location.maxIterations) {
       z.square();
       z.add(seed);
 
@@ -222,11 +222,11 @@ public class Chunk implements Runnable {
     double x1 = x / (double) settings.width;
     double y1 = y / (double) settings.height;
     c.setRe((3 * x1 - 2) * scaleConstant);
-    c.setIm((3 * y1 - 1.25) / settings.scale);
+    c.setIm((3 * y1 - 1.25) / settings.location.scale);
 
 
     //c.subtract(center);
-    Orbit orbit = new Orbit(c, settings.maxIterations);
+    Orbit orbit = new Orbit(c, settings.location.maxIterations);
     int result = orbit.convergenceTest();
 
     switch (result) {
