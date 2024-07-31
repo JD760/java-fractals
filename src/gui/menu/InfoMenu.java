@@ -19,7 +19,7 @@ import settings.GlobalSettings;
 public class InfoMenu extends JMenu {
   private GlobalSettings settings;
   private Location location;
-  private ValueItem centerLabel;
+  private JMenuItem centerLabel = new JMenuItem();
   private JMenuItem scaleLabel = new JMenuItem();
   private JMenuItem maxIterationsLabel = new JMenuItem();
   private JMenuItem fractalTypeLabel = new JMenuItem();
@@ -36,7 +36,6 @@ public class InfoMenu extends JMenu {
     super("Info");
     this.settings = settings;
     this.location = settings.location;
-    centerLabel = new ValueItem(settings);
     add(centerLabel);
     add(scaleLabel);
     add(maxIterationsLabel);

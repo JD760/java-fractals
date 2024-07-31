@@ -3,7 +3,7 @@ package gui;
 import chunk.Chunk;
 import chunk.ChunkPainter;
 import complex.Complex;
-import gui.menu.ContextMenu;
+import gui.contextmenu.ContextMenu;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
