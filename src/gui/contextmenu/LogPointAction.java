@@ -2,7 +2,9 @@ package gui.contextmenu;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import gui.Location;
+
+import settings.Location;
+
 import java.awt.GridLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
@@ -102,11 +104,6 @@ public class LogPointAction extends AbstractAction {
       add(new JLabel("Tags:"));
       add(tags);
 
-    }
-
-    @Override
-    public String getName() {
-      return nameField.getText();
     }
   }
 }

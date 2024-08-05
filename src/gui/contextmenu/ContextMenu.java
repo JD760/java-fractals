@@ -1,12 +1,13 @@
 package gui.contextmenu;
 
-import gui.Location;
 import gui.interestingpoints.InterestingPoints;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import settings.GlobalSettings;
+import settings.Location;
 
 /**
  * The context menu appears when right clicking anywhere on the canvas, and provides
@@ -21,10 +22,10 @@ public class ContextMenu extends JPopupMenu {
   /**
    * Create a new instance of the context menu.
 
-   * @param location - Represents a specific point and configuration on the canvas.
+   * @param settings - A collection of settings and object references for the whole application.
    */
-  public ContextMenu(Location location) {
-    this.location = location;
+  public ContextMenu(GlobalSettings settings) {
+    this.location = settings.location;
 
     showOrbit = new JMenuItem("Show orbit");
     logCurrentPoint = new JMenuItem("Log Point of Interest");
@@ -32,6 +33,7 @@ public class ContextMenu extends JPopupMenu {
 
     openPoi.addActionListener(new OpenAction());
     logCurrentPoint.addActionListener(new LogPointAction(logCurrentPoint, location));
+    showOrbit.addActionListener(new ShowOrbitAction(settings, getX(), getY()));
     add(showOrbit);
     addSeparator();
     add(logCurrentPoint);

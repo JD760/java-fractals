@@ -1,8 +1,9 @@
 package gui.interestingpoints;
 
-import gui.Location;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import settings.Location;
 
 /**
  * Represents the Interesting Points feature, which allows the user to log

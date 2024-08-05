@@ -1,6 +1,5 @@
 package gui.menu;
 
-import gui.Location;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -11,6 +10,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JTextField;
 import settings.Fractals;
 import settings.GlobalSettings;
+import settings.Location;
 
 /**
  * Represents the Info section of the menu bar and the associated functionality

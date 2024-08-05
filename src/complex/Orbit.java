@@ -31,6 +31,10 @@ public class Orbit {
     z.add(c);
   }
 
+  public Complex getPoint() {
+    return z;
+  }
+
   /**
    * Finds the first occurrence of c in the array of previous points.
 

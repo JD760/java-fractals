@@ -1,7 +1,6 @@
-package gui;
+package settings;
 
 import complex.Complex;
-import settings.Fractals;
 
 /**
  * Represents a specific location in the canvas, along with the settings

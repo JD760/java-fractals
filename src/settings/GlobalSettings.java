@@ -1,7 +1,6 @@
 package settings;
 
 import gui.FractalPanel;
-import gui.Location;
 import gui.menu.MenuBar;
 import java.util.Properties;
 
@@ -12,6 +11,8 @@ import java.util.Properties;
 public class GlobalSettings {
   public int width;
   public int height;
+  public int mouseX;
+  public int mouseY;
   public Location location;
   public FractalPanel panel;
   public MenuBar menu;

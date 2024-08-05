@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import complex.Complex;
 import org.junit.Test;
 import settings.Fractals;
+import settings.Location;
 
 /**
  * Contains a collection of basic tests for the Location class.

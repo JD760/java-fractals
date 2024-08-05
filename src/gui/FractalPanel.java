@@ -39,11 +39,13 @@ public class FractalPanel extends JPanel {
     private ContextMenu menu;
 
     public ClickListener(GlobalSettings settings) {
-      menu = new ContextMenu(settings.location);
+      menu = new ContextMenu(settings);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+      settings.mouseX = e.getX();
+      settings.mouseY = e.getY();
       if (e.isPopupTrigger()) {
         menu.show(e.getComponent(), e.getX(), e.getY());
         return;
@@ -57,10 +59,12 @@ public class FractalPanel extends JPanel {
       }
       // get points in the complex plane and set the center point to the
       // position of the mouse
-      center.setRe(center.re() - ((((e.getX() / (double) width) * 3) / scale) - (2 / scale)));
-      center.setIm(center.im() - ((((e.getY() / (double) height) * 3) / scale) - (1.25 / scale)));
+      //center.setRe(center.re() - ((((e.getX() / (double) width) * 3) / scale) - (2 / scale)));
+      center.setRe(center.re() - (1 / scale) * ((4 * e.getX() / (double) width) - 2));
+      center.setIm(center.im() - (1 / scale) * ((4 * e.getY() / (double) height) - 1.5));
+      //center.setIm(center.im() - ((((e.getY() / (double) height) * 3) / scale) - (1.25 / scale)));
       settings.location.scale *= 2;
-      centerCoords = new int[]{e.getX(), e.getY()};
+      centerCoords = new int[] {e.getX(), e.getY()};
       System.out.println("Center: " + center.toString());
       repaintCenter = true;
       repaint();

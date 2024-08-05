@@ -6,6 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import settings.Fractals;
 import settings.GlobalSettings;
+import settings.Location;
 
 /**
  * Contains all keybinds and associated actions for the project.
