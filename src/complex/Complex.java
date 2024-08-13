@@ -57,6 +57,21 @@ public class Complex {
   }
 
   /**
+   * Provides a string representation of the complex number with both the real and complex
+   * components rounded to within a certain number of decimal places.
+
+   * @param places - the number of places to truncate to.
+   * @return - A String representation of the complex number
+   */
+  public String toRoundedString(int places) {
+    double val = 10 * places;
+    if (im >= 0) {
+      return (Math.round(re * val) / val) + " + " + (Math.round(im * val) / val) + "i";
+    }
+    return (Math.round(re * val) / val) + " - " + (Math.round(-1 * im * val) / val) + "i";
+  }
+
+  /**
    * Performs addition between two complex numbers x + yi and u + vi
    * The resulting number is z = x + u + (y + v)i.
 
