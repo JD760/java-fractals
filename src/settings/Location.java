@@ -1,5 +1,6 @@
 package settings;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import complex.Complex;
 
 /**
@@ -31,6 +32,22 @@ public class Location {
 
   public Location() {
     this(new Complex(), new Complex(-0.32, 0.21), 1.0, 1000, Fractals.MANDELBROT);
+  }
+
+  /**
+   * Creates a new Location object based on JSON input.
+
+   * @param locationJson - a representation of a JSON object that should encode a valid location
+   */
+  public Location(JsonNode locationJson) {
+    this.maxIterations = locationJson.get("maxIterations").asInt();
+    double re = locationJson.get("Re(center)").asDouble();
+    double im = locationJson.get("Im(center)").asDouble();
+    this.center = new Complex(re, im);
+    this.mode = Fractals.getElement(locationJson.get("mode").asText());
+    System.out.println("Mode: " + this.mode);
+    this.scale = Double.parseDouble(locationJson.get("scale").asText());
+    this.seed = new Complex(-0.1, 0.1);
   }
 
   @Override
@@ -75,7 +92,7 @@ public class Location {
       return false;
     }
 
-    tempMode = findMode(settings[4]);
+    tempMode = Fractals.getElement(settings[4]);
     if (tempMode == null) {
       return false;
     }
@@ -86,14 +103,5 @@ public class Location {
     maxIterations = tempMaxIterations;
     mode = tempMode;
     return true;
-  }
-
-  private Fractals findMode(String input) {
-    for (Fractals mode : Fractals.values()) {
-      if (mode.toString() == input) {
-        return mode;
-      }
-    }
-    return null;
   }
 }
