@@ -3,6 +3,7 @@ package gui.interestingpoints;
 import chunk.ChunkPainter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import complex.Complex;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -28,7 +29,7 @@ import utils.Utils;
 public class InterestingPoints extends JPanel {
   private JsonNode[] data;
   private JTable table = new JTable(new TableModel());
-  private Location selected = new Location();
+  private Location selected;
   private JLabel nameLabel = new JLabel("Name: ");
   private JLabel tagsLabel = new JLabel("Tags: ");
   private JLabel centerLabel = new JLabel("Center: ");
@@ -43,7 +44,8 @@ public class InterestingPoints extends JPanel {
    * Create a new UI element to display the interesting points GUI, allowing viewing
    * and preview of saved points.
    */
-  public InterestingPoints() {
+  public InterestingPoints(Location selected) {
+    this.selected = selected;
     ObjectNode json = Utils.fileToJson(new File("src/config/pointLog.json"));
     Iterator<JsonNode> elements = json.elements();
     data = new JsonNode[json.size()];
@@ -84,7 +86,16 @@ public class InterestingPoints extends JPanel {
     public void mousePressed(MouseEvent e) {
       int row = table.getSelectedRow();
       JsonNode rowData = data[row];
-      selected = new Location(rowData);
+      selected.update(
+          new Complex(
+            rowData.get("Re(center)").asDouble(),
+            rowData.get("Im(center)").asDouble()
+          ),
+          new Complex(),
+          Double.parseDouble(rowData.get("scale").asText()),
+          rowData.get("maxIterations").asInt(),
+          Fractals.getElement(rowData.get("mode").asText())
+      );
       
       nameLabel.setText("Name: " + (String) table.getValueAt(row, 0));
       tagsLabel.setText("Tags: " + (String) table.getValueAt(row, 1));

@@ -51,6 +51,25 @@ public class Location {
   }
 
   @Override
+  public boolean equals(Object other) {
+    if (!(other instanceof Location)) {
+      return false;
+    }
+    Location otherLoc = (Location) other;
+
+    if (center != otherLoc.center || seed != otherLoc.seed) {
+      return false;
+    }
+    if (scale != otherLoc.scale || maxIterations != otherLoc.maxIterations) {
+      return false;
+    }
+    if (mode != otherLoc.mode) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
   public String toString() {
     StringBuilder outputStr = new StringBuilder();
     outputStr.append(center.re() + ",");
@@ -61,6 +80,23 @@ public class Location {
     outputStr.append(maxIterations + ",");
     outputStr.append(mode.toString());
     return outputStr.toString();
+  }
+
+  /**
+   * Change the location represented by a given instance.
+
+   * @param center - the center point of the canvas in complex space
+   * @param seed - the seed point used for Julia sets
+   * @param scale - the scale/zoom factor
+   * @param maxIterations - the maximum number of iterations before a point is decided to converge
+   * @param mode - the type of fractal to draw
+   */
+  public void update(Complex center, Complex seed, double scale, int maxIterations, Fractals mode) {
+    this.center = new Complex(center.re(), center.im());
+    this.seed = new Complex(seed.re(), seed.im());
+    this.scale = scale;
+    this.maxIterations = maxIterations;
+    this.mode = mode;
   }
 
   /**

@@ -44,12 +44,23 @@ public class ContextMenu extends JPopupMenu {
 
   class OpenAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
+      Location selected = new Location();
       JOptionPane.showMessageDialog(
           settings.panel,
-          new InterestingPoints(),
+          new InterestingPoints(selected),
           "test",
           JOptionPane.PLAIN_MESSAGE
       );
+      if (selected.equals(new Location())) {
+        System.out.println("No point chosen");
+        return;
+      }
+
+      settings.location.update(
+          selected.center, selected.seed, selected.scale, selected.maxIterations, selected.mode
+      );
+      settings.panel.repaint();
     }
+
   }
 }
