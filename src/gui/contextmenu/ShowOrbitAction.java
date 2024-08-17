@@ -2,6 +2,7 @@ package gui.contextmenu;
 
 import complex.Complex;
 import complex.Orbit;
+import complex.Point;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -28,8 +29,8 @@ public class ShowOrbitAction extends AbstractAction {
 
   public void actionPerformed(ActionEvent e) {
     Orbit orbit = new Orbit(Utils.getComplexPoint(
-          settings.mouseX,
-          settings.mouseY,
+          settings.mouseCoords.x,
+          settings.mouseCoords.y,
           settings.width,
           settings.height,
           location.scale),
@@ -42,11 +43,11 @@ public class ShowOrbitAction extends AbstractAction {
   }
 
   private void stepOrbit(Graphics g, Orbit orbit) {
-    int[] origin = Utils.getCanvasPoint(
-        orbit.getPoint(), settings.width, settings.height, location.scale, location.center);
+    Point origin = Utils.getCanvasPoint(
+        new Complex(orbit.getPoint().re(), orbit.getPoint().im()), settings.width, settings.height, location.scale, location.center, settings.centerCoords);
     orbit.next();
-    int[] dest = Utils.getCanvasPoint(
-        orbit.getPoint(), settings.width, settings.height, location.scale, location.center);
-    g.drawLine(origin[0], origin[1], dest[0], dest[1]);
+    Point dest = Utils.getCanvasPoint(
+        new Complex(orbit.getPoint().re(), orbit.getPoint().im()), settings.width, settings.height, location.scale, location.center, settings.centerCoords);
+    g.drawLine(origin.x, origin.y, dest.x, dest.y);
   }
 }

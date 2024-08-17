@@ -15,6 +15,7 @@ import settings.Location;
  */
 public class ContextMenu extends JPopupMenu {
   public Location location;
+  private GlobalSettings settings;
   JMenuItem showOrbit;
   JMenuItem logCurrentPoint;
   JMenuItem openPoi;
@@ -25,6 +26,7 @@ public class ContextMenu extends JPopupMenu {
    * @param settings - A collection of settings and object references for the whole application.
    */
   public ContextMenu(GlobalSettings settings) {
+    this.settings = settings;
     this.location = settings.location;
 
     showOrbit = new JMenuItem("Show orbit");
@@ -43,8 +45,8 @@ public class ContextMenu extends JPopupMenu {
   class OpenAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
       JOptionPane.showMessageDialog(
-          openPoi,
-          new InterestingPoints(location),
+          settings.panel,
+          new InterestingPoints(),
           "test",
           JOptionPane.PLAIN_MESSAGE
       );

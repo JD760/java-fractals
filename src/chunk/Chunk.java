@@ -102,8 +102,8 @@ public class Chunk implements Runnable {
     // and use this as the seed
     double x1 = x / (double) settings.width;
     double y1 = y / (double) settings.height;
-    c.setRe((4 * x1 - 2) * scaleConstant);
-    c.setIm((4 * y1 - 1.5) / settings.location.scale);
+    c.setRe((3 * x1 - 2) * scaleConstant);
+    c.setIm((3 * y1 - 1.25) / settings.location.scale);
 
     int iterations = 0;
     while (iterations < settings.location.maxIterations) {

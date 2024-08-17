@@ -64,11 +64,14 @@ public class Complex {
    * @return - A String representation of the complex number
    */
   public String toRoundedString(int places) {
-    double val = 10 * places;
+    String reStr = Double.toString(re).substring(0, places);
+    String imStr;
     if (im >= 0) {
-      return (Math.round(re * val) / val) + " + " + (Math.round(im * val) / val) + "i";
+      imStr = Double.toString(im).substring(0, places);
+      return reStr + " + " + imStr;
     }
-    return (Math.round(re * val) / val) + " - " + (Math.round(-1 * im * val) / val) + "i";
+    imStr = Double.toString(-1 * im).substring(0, places);
+    return reStr + " - " + imStr;
   }
 
   /**

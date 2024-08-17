@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import complex.Complex;
+import complex.Point;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -71,16 +73,21 @@ public class Utils {
    * @param center - the center point of the canvas
    * @return - the (x, y) co-ordinate that represents the point c
    */
-  public static int[] getCanvasPoint(
-      Complex p, int width, int height, double scale, Complex center) {
-    int[] point = new int[2];
+  public static Point getCanvasPoint(
+      Complex p, int width, int height, double scale, Complex center, Point centerCoords) {
 
-    // by subtracting the center point we can treat the center as the origin for further calculation
+    // the difference in the complex plane that corresponds to 1 pixel
+    double dx = (1 / (double) width) / scale;
+    double dy = (1 / (double) height) / scale;
+
+    // by subtracting the center point we get the difference in real and complex parts
     p.subtract(center);
-
-
-
-    return point;
+    // use the center co-ords + difference in each part to find the co-ordinates of p
+    // accurate to within a radius of 1 pixel
+    return new Point(
+      (int) Math.round(p.re() / dx) + centerCoords.x,
+      (int) Math.round(p.im() / dy) + centerCoords.y
+    );
   }
 
   /**
@@ -94,13 +101,12 @@ public class Utils {
    * @return - the complex value associated with the point (x, y)
    */
   public static Complex getComplexPoint(int x, int y, int width, int height, double scale) {
-    double fractalWidth = 3 / scale;
     Complex c = new Complex();
     double aspectRatio = width / (double) height;
     double x1 = x / (double) width;
     double y1 = y / (double) height;
-    c.setRe((3 * x1 - 2) * (aspectRatio / scale));
-    c.setIm((3 * y1 - 1.25) / scale);
+    c.setRe((4 * x1 - 2) * (aspectRatio / scale));
+    c.setIm((4 * y1 - 1.5) / scale);
 
     return c;
   }

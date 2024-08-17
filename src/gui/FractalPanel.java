@@ -3,6 +3,7 @@ package gui;
 import chunk.Chunk;
 import chunk.ChunkPainter;
 import complex.Complex;
+import complex.Point;
 import gui.contextmenu.ContextMenu;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,7 +20,6 @@ public class FractalPanel extends JPanel {
   int width;
   int height;
   boolean repaintCenter = false;
-  int[] centerCoords = new int[] {0, 0};
   Chunk[][] chunks;
 
   /**
@@ -44,13 +44,14 @@ public class FractalPanel extends JPanel {
 
     @Override
     public void mousePressed(MouseEvent e) {
-      settings.mouseX = e.getX();
-      settings.mouseY = e.getY();
+      settings.mouseCoords = new Point(e.getX(), e.getY());
+
       if (e.isPopupTrigger()) {
         menu.show(e.getComponent(), e.getX(), e.getY());
         return;
       }
 
+      settings.centerCoords = new Point(e.getX(), e.getY());
       Complex center = settings.location.center;
       double scale = settings.location.scale;
       // we only want click-to-zoom to work within the bounds of the image panel
@@ -59,12 +60,9 @@ public class FractalPanel extends JPanel {
       }
       // get points in the complex plane and set the center point to the
       // position of the mouse
-      //center.setRe(center.re() - ((((e.getX() / (double) width) * 3) / scale) - (2 / scale)));
-      center.setRe(center.re() - (1 / scale) * ((4 * e.getX() / (double) width) - 2));
-      center.setIm(center.im() - (1 / scale) * ((4 * e.getY() / (double) height) - 1.5));
-      //center.setIm(center.im() - ((((e.getY() / (double) height) * 3) / scale) - (1.25 / scale)));
+      center.setRe(center.re() - (1 / scale) * ((3 * e.getX() / (double) width) - 2));
+      center.setIm(center.im() - (1 / scale) * ((3 * e.getY() / (double) height) - 1.25));
       settings.location.scale *= 2;
-      centerCoords = new int[] {e.getX(), e.getY()};
       System.out.println("Center: " + center.toString());
       repaintCenter = true;
       repaint();
@@ -85,7 +83,7 @@ public class FractalPanel extends JPanel {
     ChunkPainter.paintChunks(settings.width, settings.height, g, settings);
     if (repaintCenter) {
       g.setColor(Color.RED);
-      g.fillRect(centerCoords[0] - 1, centerCoords[1] - 1, 3, 3);
+      g.fillRect(settings.centerCoords.x - 1, settings.centerCoords.y - 1, 3, 3);
       repaintCenter = false;
     }
     settings.menu.refreshMenu();

@@ -1,5 +1,6 @@
 package settings;
 
+import complex.Point;
 import gui.FractalPanel;
 import gui.menu.MenuBar;
 import java.util.Properties;
@@ -11,8 +12,8 @@ import java.util.Properties;
 public class GlobalSettings {
   public int width;
   public int height;
-  public int mouseX;
-  public int mouseY;
+  public Point centerCoords;
+  public Point mouseCoords;
   public Location location;
   public FractalPanel panel;
   public MenuBar menu;
@@ -22,6 +23,23 @@ public class GlobalSettings {
    */
   public GlobalSettings() {
     location = new Location();
+    centerCoords = new Point();
+    mouseCoords = new Point();
+  }
+
+  /**
+   * Create a Settings object in the format for an icon as used in the Interesting Points
+   * feature.
+
+   * @param width - the width of the icon in pixels
+   * @param height - the height of the icon in pixels
+   * @param location - A Location object containing the information needed to render the image
+   */
+  public GlobalSettings(int width, int height, Location location) {
+    this();
+    this.width = width;
+    this.height = height;
+    this.location = location;
   }
 
   /**
