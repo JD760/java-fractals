@@ -9,6 +9,11 @@ import javax.swing.SwingUtilities;
 import settings.GlobalSettings;
 import utils.Utils;
 
+//TODO: Implement colour scheme selection (colour wheel?) for fractal colouring
+//TODO: Add more types of fractals (burning ship, fix Julia Set code)
+//TODO: Add context options to the Interesting Points such as modify/delete
+//TODO: Implement different colouring methods
+
 /**
  * Contains driver code for setting up the UI and running the application.
  */
