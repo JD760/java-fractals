@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import settings.GlobalSettings;
 
 /**
@@ -67,7 +69,13 @@ public class ChunkPainter implements Runnable {
       }
     }
 
-    threadpool.close();
+    threadpool.shutdown();
+    try {
+      threadpool.awaitTermination(1000, TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      System.err.println("Iteration thread interrupted");
+    }
+    
     while (!painters.isEmpty()) {
       ChunkPainter painter = painters.poll();
       g.drawImage(painter.image, painter.x, painter.y, null);

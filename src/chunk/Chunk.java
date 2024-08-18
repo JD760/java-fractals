@@ -5,6 +5,8 @@ import complex.Orbit;
 import java.awt.Color;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 import settings.GlobalSettings;
 
 /**
@@ -61,7 +63,13 @@ public class Chunk implements Runnable {
       }
     }
 
-    threadpool.close();
+    threadpool.shutdown();
+    try {
+      threadpool.awaitTermination(1000, TimeUnit.MILLISECONDS);
+    } catch (InterruptedException e) {
+      System.err.println("Iteration thread interrupted");
+    }
+
     System.out.println("Iteration Time: " + ((System.nanoTime() - startTime) / 1000000.0) + "ms");
     return chunks;
   }
