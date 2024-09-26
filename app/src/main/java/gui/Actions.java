@@ -61,7 +61,6 @@ public class Actions {
     public void actionPerformed(ActionEvent e) {
       location.scale *= 2.0;
       settings.panel.repaint();
-      System.out.println("Scale: " + location.scale);
     }
   };
 
@@ -71,7 +70,6 @@ public class Actions {
         location.scale /= 2.0;
         settings.panel.repaint();
       }
-      System.out.println("Scale: " + location.scale);
     }
   };
 

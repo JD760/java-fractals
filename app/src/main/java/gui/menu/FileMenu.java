@@ -83,13 +83,12 @@ public class FileMenu extends JMenu {
         }
         BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
         ChunkPainter.paintChunks(width, height, img.getGraphics(), settings);
-        System.out.println("Created image data");
         File selected = fileChoose.getSelectedFile();
         File imageFile = new File(selected.toString() + ".png");
         try {
           ImageIO.write(img, "PNG", imageFile);
         } catch (IOException ioe) {
-          System.out.println(ioe);
+          System.err.println(ioe);
           return;
         }
       }
