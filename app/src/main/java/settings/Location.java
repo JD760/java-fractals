@@ -45,7 +45,6 @@ public class Location {
     double im = locationJson.get("Im(center)").asDouble();
     this.center = new Complex(re, im);
     this.mode = Fractals.getElement(locationJson.get("mode").asText());
-    System.out.println("Mode: " + this.mode);
     this.scale = Double.parseDouble(locationJson.get("scale").asText());
     this.seed = new Complex(-0.1, 0.1);
   }

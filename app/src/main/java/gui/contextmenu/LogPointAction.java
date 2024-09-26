@@ -67,8 +67,6 @@ public class LogPointAction extends AbstractAction {
       validationError("Error writing to point log file");
       return;
     }
-
-    System.out.println(json.toString());
   }
 
   private void validationError(String message) {

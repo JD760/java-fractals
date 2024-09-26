@@ -52,7 +52,6 @@ public class ContextMenu extends JPopupMenu {
           JOptionPane.PLAIN_MESSAGE
       );
       if (selected.equals(new Location())) {
-        System.out.println("No point chosen");
         return;
       }
 

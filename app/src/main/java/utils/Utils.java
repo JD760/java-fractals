@@ -36,7 +36,7 @@ public class Utils {
     } catch (FileNotFoundException e) {
       System.err.println("Could not find file: " + file.toString());
     } catch (IOException e) {
-      System.out.println("Error while reading file: " + file.toString());
+      System.err.println("Error while reading file: " + file.toString());
     }
 
     return str.toString();

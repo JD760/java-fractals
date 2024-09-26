@@ -105,7 +105,6 @@ public class InfoMenu extends JMenu {
         location.scale = Double.parseDouble(settingsStr[2]);
         location.maxIterations = Integer.parseInt(settingsStr[3]);
       } catch (NumberFormatException nfe) {
-        System.out.println(nfe);
         invalidSettings(source, "Invalid number format...");
         return;
       }
