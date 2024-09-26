@@ -1,12 +1,10 @@
 package chunk;
 
 import complex.Complex;
-import complex.Orbit;
 import java.awt.Color;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
 import settings.GlobalSettings;
 
 /**
@@ -94,7 +92,7 @@ public class Chunk implements Runnable {
             iterationData[y - position[1]][x - position[0]] = juliaPoint(x, y, seed);
             break;
           case JULIA_DIVERGENCE:
-            iterationData[y - position[1]][x - position[0]] = juliaDivergence(x, y, seed);
+            //iterationData[y - position[1]][x - position[0]] = juliaDivergence(x, y, seed);
             break;
           default:
             break;
@@ -129,12 +127,7 @@ public class Chunk implements Runnable {
     if (iterations == settings.location.maxIterations) {
       return Color.BLACK;
     }
-    double continuousIndex = iterations + 1 - ((log2 / z.magnitude()) / log2);
-    int red = (int) Math.abs((Math.sin(0.01 * continuousIndex + 4) * 230) + 25);
-    int blue = (int) Math.abs((Math.sin(0.016 * continuousIndex + 2) * 230) + 25);
-    int green = (int) Math.abs((Math.sin(0.01 * continuousIndex + 1) * 230) + 25);
-    //return new Color(iterations % 255, iterations % 255, iterations % 255);
-    return new Color(red, blue, green);
+    return Colouring.continuousColouring(iterations, z);
   }
 
   private Color divergenceScheme(int x, int y) {
@@ -168,86 +161,13 @@ public class Chunk implements Runnable {
   }
 
   private Color juliaPoint(int x, int y, Complex seed) {
-    Complex z = new Complex(0, 0);
+    Complex z = new Complex();
     double x1 = x / (double) settings.width;
-    double y1 = y / (double) settings.height;
-    z.setRe((4 * x1 - 2) * scaleConstant);
-    //z.setRe(((x1 * (4 * aspectRatio)) / scale) - ((2 * aspectRatio) / scale));
-    z.setIm((4 * y1 - 2) / settings.location.scale);
-    z.subtract(settings.location.center);
+    double y1 = x / (double) settings.height;
+    z.setRe((3 * x1 - 2) * scaleConstant);
+    z.setIm((3 * y1 - 1.25) / settings.location.scale);
+    
 
-    int iterations = 0;
-    while (iterations < settings.location.maxIterations) {
-      z.square();
-      z.add(seed);
-
-      if (z.magnitude() > 4) {
-        break;
-      }
-      iterations++;
-    }
-    if (iterations == settings.location.maxIterations) {
-      return Color.BLACK;
-    }
-
-    double continuousIndex = iterations + 1 - ((log2 / z.magnitude()) / log2);
-    int red = (int) Math.abs((Math.sin(0.01 * continuousIndex + 4) * 230) + 25);
-    int blue = (int) Math.abs((Math.sin(0.016 * continuousIndex + 2) * 230) + 25);
-    int green = (int) Math.abs((Math.sin(0.01 * continuousIndex + 1) * 230) + 25);
-    //return new Color(iterations % 255, iterations % 255, iterations % 255);
-    return new Color(red, blue, green);
-  } 
-
-  private Color juliaDivergence(int x, int y, Complex seed) {
-    Complex z = new Complex(0, 0);
-    double x1 = x / (double) settings.width;
-    double y1 = y / (double) settings.height;
-    z.setRe((4 * x1 - 2) * scaleConstant);
-    z.setIm((4 * y1 - 2) / settings.location.scale);
-    z.subtract(settings.location.center);
-  
-    int iterations = 0;
-    while (iterations < settings.location.maxIterations) {
-      z.square();
-      z.add(seed);
-
-      if (z.magnitude() > 4) {
-        if (iterations % 2 == 0) {
-          return Color.BLACK;
-        }
-        return Color.WHITE;
-      }
-      iterations++;
-    }
-    return new Color(iterations % 255);
-  }
-
-  @SuppressWarnings("unused")
-  private Color convergenceScheme(int x, int y) {
-    Complex c = new Complex(0, 0);
-    // compute the current location translated into the complex plane
-    // and use this as the seed
-    double x1 = x / (double) settings.width;
-    double y1 = y / (double) settings.height;
-    c.setRe((3 * x1 - 2) * scaleConstant);
-    c.setIm((3 * y1 - 1.25) / settings.location.scale);
-
-
-    //c.subtract(center);
-    Orbit orbit = new Orbit(c, settings.location.maxIterations);
-    int result = orbit.convergenceTest();
-
-    switch (result) {
-      case 1:
-        return Color.CYAN;
-      case 2:
-        return Color.BLUE;
-      case 3:
-        return Color.GREEN;
-      case 4:
-        return Color.PINK;
-      default:
-        return Color.BLACK;
-    }
+    return Color.BLUE;
   }
 }

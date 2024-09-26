@@ -54,9 +54,6 @@ public class App {
     FractalPanel panel = new FractalPanel(settings);
     Frame f = new Frame(panel, settings);
     f.setSize(width, height);
-
-    //f.add(panel);
-    //f.setVisible(true);
   }
 }
 

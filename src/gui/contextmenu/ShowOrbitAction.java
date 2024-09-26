@@ -17,14 +17,10 @@ import utils.Utils;
 public class ShowOrbitAction extends AbstractAction {
   private GlobalSettings settings;
   private Location location;
-  private int x;
-  private int y;
 
   public ShowOrbitAction(GlobalSettings settings, int x, int y) {
     this.settings = settings;
     this.location = settings.location;
-    this.x = x;
-    this.y = y;
   }
 
   public void actionPerformed(ActionEvent e) {

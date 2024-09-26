@@ -9,7 +9,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Iterator;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -150,36 +149,6 @@ public class InterestingPoints extends JPanel {
 
     public Class<?> getColumnClass(int c) {
       return getValueAt(0, c).getClass();
-    }
-
-  }
-
-  /**
-   * Represents a single row in the table of results, i.e. a single point of interest.
-   */
-  @SuppressWarnings("AbbreviationAsWordInName")
-  class POI {
-    String name;
-    String[] tags;
-    Location location;
-
-    public POI(String name, String[] tags) {
-      this.name = name;
-      this.tags = tags;
-    }
-
-    public Object getProperty(int index) {
-      switch (index) {
-        case 0:
-          return name;
-        case 1:
-          return Arrays.toString(tags);
-        case 2:
-          return "";
-        default:
-          break;
-      }
-      return null;
     }
   }
 }
