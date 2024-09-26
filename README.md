@@ -3,7 +3,9 @@ Simple Fractal Viewing application written in Java using the AWT/Swing GUI libra
 Features:
 - Multithreaded drawing algorithm for near-realtime performance
 - Movement and zoom features, allowing deeper exploration of the fractals
-- (Upcoming) Support for other interesting fractals such as Julia Sets
+- Support for other interesting fractals such as Julia Sets
+- Save and retrieve interesting points
+- (Upcoming) modify colour settings on the fly
 
 Controls:
 - Arrow keys - move the viewport in the respective direction
