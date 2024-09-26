@@ -63,7 +63,6 @@ public class FractalPanel extends JPanel {
       center.setRe(center.re() - (1 / scale) * ((3 * e.getX() / (double) width) - 2));
       center.setIm(center.im() - (1 / scale) * ((3 * e.getY() / (double) height) - 1.25));
       settings.location.scale *= 2;
-      System.out.println("Center: " + center.toString());
       repaintCenter = true;
       repaint();
     }

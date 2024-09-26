@@ -15,6 +15,7 @@ public class GlobalSettings {
   public Point centerCoords;
   public Point mouseCoords;
   public Location location;
+  public ColorSettings colorSettings;
   public FractalPanel panel;
   public MenuBar menu;
 
@@ -23,6 +24,7 @@ public class GlobalSettings {
    */
   public GlobalSettings() {
     location = new Location();
+    colorSettings = new ColorSettings();
     centerCoords = new Point();
     mouseCoords = new Point();
   }
