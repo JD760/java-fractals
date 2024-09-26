@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import complex.Complex;
 import complex.Point;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
