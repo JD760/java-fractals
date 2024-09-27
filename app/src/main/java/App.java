@@ -6,10 +6,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
+
 import settings.GlobalSettings;
 import utils.Utils;
 
-//TODO: Implement colour scheme selection (colour wheel?) for fractal colouring
 //TODO: Add more types of fractals (burning ship, fix Julia Set code)
 //TODO: Add context options to the Interesting Points such as modify/delete
 //TODO: Implement different colouring methods
@@ -53,6 +54,7 @@ public class App {
 
     FractalPanel panel = new FractalPanel(settings);
     Frame f = new Frame(panel, settings);
+    f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     f.setSize(width, height);
   }
 }

@@ -27,6 +27,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-core:2.17.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.17.0")
+    implementation("net.java.dev.jna:jna:5.15.0")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

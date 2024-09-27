@@ -49,10 +49,9 @@ public class Chunk implements Runnable {
   public static Chunk[][] createChunks(int width, int height, GlobalSettings settings) {
     int chunksX = width / 32;
     int chunksY = height / 32;
-    final long startTime = System.nanoTime();
 
     Chunk[][] chunks = new Chunk[chunksY][chunksX];
-    ExecutorService threadpool = Executors.newFixedThreadPool(10);
+    ExecutorService threadpool = Executors.newCachedThreadPool();
 
     for (int y = 0; y < chunksY; y++) {
       for (int x = 0; x < chunksX; x++) {
@@ -68,7 +67,6 @@ public class Chunk implements Runnable {
       System.err.println("Iteration thread interrupted");
     }
 
-    System.out.println("Iteration Time: " + ((System.nanoTime() - startTime) / 1000000.0) + "ms");
     return chunks;
   }
 
@@ -79,25 +77,30 @@ public class Chunk implements Runnable {
   @Override
   public void run() {
     Complex seed = settings.location.seed;
-    for (int y = position[1]; y < position[1] + size; y++) {
-      for (int x = position[0]; x < position[0] + size; x++) {
-        switch (settings.location.mode) {
-          case MANDELBROT:
+    switch (settings.location.mode) {
+      case MANDELBROT:
+        for (int y = position[1]; y < position[1] + size; y++) {
+          for (int x = position[0]; x < position[0] + size; x++) {
             iterationData[y - position[1]][x - position[0]] = mandelbrotPoint(x, y);
-            break;
-          case DIVERGENCE_SCHEME:
-            iterationData[y - position[1]][x - position[0]] = divergenceScheme(x, y);
-            break;
-          case JULIA:
-            iterationData[y - position[1]][x - position[0]] = juliaPoint(x, y, seed);
-            break;
-          case JULIA_DIVERGENCE:
-            //iterationData[y - position[1]][x - position[0]] = juliaDivergence(x, y, seed);
-            break;
-          default:
-            break;
+          }
         }
-      }
+        break;
+      case DIVERGENCE_SCHEME:
+        for (int y = position[1]; y < position[1] + size; y++) {
+          for (int x = position[0]; x < position[0] + size; x++) {
+            iterationData[y - position[1]][x - position[0]] = divergenceScheme(x, y);
+          }
+        }
+        break;
+      case JULIA:
+        for (int y = position[1]; y < position[1] + size; y++) {
+          for (int x = position[0]; x < position[0] + size; x++) {
+            iterationData[y - position[1]][x - position[0]] = juliaPoint(x, y, seed);
+          }
+        }
+        break;
+      default:
+        break;
     }
   }
 

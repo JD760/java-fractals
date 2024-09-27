@@ -52,10 +52,13 @@ public class ChunkPainter implements Runnable {
    * @param settings - the settings and values global to the entire project
    */
   public static void paintChunks(int width, int height, Graphics g, GlobalSettings settings) {
+    long startTime = System.nanoTime();
     Chunk[][] chunks = Chunk.createChunks(width, height, settings);
+    System.out.println("Iteration data constructed in: " + (System.nanoTime() - startTime) / 1000000 + "ms");
 
+    startTime = System.nanoTime();
     ConcurrentLinkedQueue<ChunkPainter> painters = new ConcurrentLinkedQueue<>();
-    ExecutorService threadpool = Executors.newFixedThreadPool(10);
+    ExecutorService threadpool = Executors.newCachedThreadPool();
 
     for (int y = 0; y < chunks.length; y++) {
       for (int x = 0; x < chunks[0].length; x++) {
@@ -74,11 +77,15 @@ public class ChunkPainter implements Runnable {
     } catch (InterruptedException e) {
       System.err.println("Iteration thread interrupted");
     }
+    System.out.println("Chunk painting completed in " + (System.nanoTime() - startTime) / 1000000 + "ms");
+    startTime = System.nanoTime();
     
     while (!painters.isEmpty()) {
       ChunkPainter painter = painters.poll();
       g.drawImage(painter.image, painter.x, painter.y, null);
     }
+    System.out.println("Chunks drawn onto canvas in " + (System.nanoTime() - startTime) / 1000000 + "ms");
+    System.out.println("--------------------");
   }
 
   @Override

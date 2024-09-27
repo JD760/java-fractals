@@ -27,6 +27,12 @@ public class FractalPanel extends JPanel {
    * of the largest square that can be created on the user's display.
    */
   public FractalPanel(GlobalSettings settings) {
+    // optimise the drawing process slightly by telling swing we will always paint
+    // all of the pixels and never require transparency.
+    setOpaque(true);
+    // we do not need double buffering as we have no smooth transitions
+    // due to the chaotic nature of most fractals
+    setDoubleBuffered(false);
     this.width = settings.width;
     this.height = settings.height;
     this.settings = settings;
