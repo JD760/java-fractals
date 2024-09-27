@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+
 import javax.swing.JPanel;
 import settings.GlobalSettings;
 
@@ -85,12 +87,20 @@ public class FractalPanel extends JPanel {
 
   @Override
   public void paintComponent(Graphics g) {
-    ChunkPainter.paintChunks(settings.width, settings.height, g, settings);
+    // create an image that covers the canvas and draw onto this instead of the JPanel 
+    BufferedImage img = new BufferedImage(
+        settings.width, settings.height, BufferedImage.TYPE_3BYTE_BGR
+    );
+
+    ChunkPainter.paintChunks(settings.width, settings.height, img.createGraphics(), settings);
     if (repaintCenter) {
       g.setColor(Color.RED);
       g.fillRect(settings.centerCoords.x - 1, settings.centerCoords.y - 1, 3, 3);
       repaintCenter = false;
     }
+    // draw the canvas onto the JPanel directly instead of drawing individual chunks
+    // this is far faster.
+    g.drawImage(img, 0, 0, null);
     settings.menu.refreshMenu();
   }
 }
