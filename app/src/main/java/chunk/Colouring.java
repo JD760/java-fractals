@@ -2,6 +2,8 @@ package chunk;
 
 import complex.Complex;
 import java.awt.Color;
+import settings.ColorSettings;
+import settings.GlobalSettings;
 
 /**
  * Contains a collection of colouring methods for custom colour schemes.
@@ -41,7 +43,16 @@ public class Colouring {
    * @param z - the point in complex space representing the pixel
    * @return - the Color the pixel should be drawn as
    */
-  public static Color continuousColouring(int iterations, Complex z) {
-    return continuousColouring(iterations, z, 0.01, 0.016, 0.013, 230, 25);
+  public static Color continuousColouring(int iterations, Complex z, GlobalSettings settings) {
+    ColorSettings c = settings.colorSettings;
+    return continuousColouring(
+      iterations,
+      z,
+      c.redFreq,
+      c.greenFreq,
+      c.blueFreq,
+      230,
+      25
+    );
   }
 }

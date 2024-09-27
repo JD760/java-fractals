@@ -1,6 +1,5 @@
 package gui.menu;
 
-import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import settings.GlobalSettings;
 
@@ -9,8 +8,9 @@ import settings.GlobalSettings;
  * the user to change settings manually.
  */
 public class MenuBar extends JMenuBar {
-  private JMenu fileMenu;
-  private JMenu toolsMenu;
+  private FileMenu fileMenu;
+  private ToolsMenu toolsMenu;
+  private ColorMenu colorMenu;
   private InfoMenu infoMenu;
 
   /**
@@ -22,10 +22,12 @@ public class MenuBar extends JMenuBar {
     fileMenu = new FileMenu(settings);
     toolsMenu = new ToolsMenu(settings);
     infoMenu = new InfoMenu(settings);
+    colorMenu = new ColorMenu(settings);
 
     add(fileMenu);
     add(toolsMenu);
     add(infoMenu);
+    add(colorMenu);
   }
 
   public void refreshMenu() {

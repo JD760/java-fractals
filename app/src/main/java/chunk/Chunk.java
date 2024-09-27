@@ -127,7 +127,7 @@ public class Chunk implements Runnable {
     if (iterations == settings.location.maxIterations) {
       return Color.BLACK;
     }
-    return Colouring.continuousColouring(iterations, z);
+    return Colouring.continuousColouring(iterations, z, settings);
   }
 
   private Color divergenceScheme(int x, int y) {

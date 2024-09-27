@@ -26,6 +26,9 @@ public class InfoMenu extends JMenu {
   private JMenuItem copySettings = new JMenuItem("Copy Settings");
   private JTextField importSettings = new JTextField();
   private JMenuItem seedLabel = new JMenuItem();
+  private JMenuItem redFreq = new JMenuItem();
+  private JMenuItem greenFreq = new JMenuItem();
+  private JMenuItem blueFreq = new JMenuItem();
 
   /**
    * Create a new instance of the info menu, and sets up the associated labels/items.
@@ -42,6 +45,10 @@ public class InfoMenu extends JMenu {
     add(fractalTypeLabel);
     add(seedLabel);
     addSeparator();
+    add(redFreq);
+    add(greenFreq);
+    add(blueFreq);
+    addSeparator();
     add(copySettings);
     importSettings.addActionListener(new ImportAction());
     add(importSettings);
@@ -57,6 +64,10 @@ public class InfoMenu extends JMenu {
     maxIterationsLabel.setText("Max Iterations: " + location.maxIterations);
     fractalTypeLabel.setText("Mode: " + Fractals.toString(location.mode));
     seedLabel.setText("Seed: " + location.seed.toString());
+    redFreq.setText("Red Frequency: " + settings.colorSettings.redFreq);
+    greenFreq.setText("Green Frequency: " + settings.colorSettings.greenFreq);
+    blueFreq.setText("Blue Frequency: " + settings.colorSettings.blueFreq);
+
     copySettings.setAction(new CopyAction());
     copySettings.setText("Copy Settings");
     seedLabel.setVisible(
