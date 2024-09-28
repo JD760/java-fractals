@@ -19,6 +19,8 @@ public class GlobalSettings {
   public FractalPanel panel;
   public MenuBar menu;
 
+  public static final String pointLogPath = "app/src/main/java/config/pointLog.json";
+
   /**
    * Creates a new global settings object with default values.
    */

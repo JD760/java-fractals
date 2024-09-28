@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-
 import settings.GlobalSettings;
 import utils.Utils;
 
@@ -25,10 +24,10 @@ public class App {
    * @param args - currently unused
    */
   public static void main(String[] args) {
-    String jsonContents = Utils.readFile(new File("src/config/pointLog.json"));
+    String jsonContents = Utils.readFile(new File(GlobalSettings.pointLogPath));
     if (jsonContents.length() == 0) {
       try {
-        FileWriter writer = new FileWriter(new File("src/config/pointLog.json"));
+        FileWriter writer = new FileWriter(new File(GlobalSettings.pointLogPath));
         writer.write("{}");
         writer.close();
       } catch (IOException e) {
