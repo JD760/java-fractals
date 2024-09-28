@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import settings.GlobalSettings;
 
@@ -27,6 +28,12 @@ public class FractalPanel extends JPanel {
    * of the largest square that can be created on the user's display.
    */
   public FractalPanel(GlobalSettings settings) {
+    // optimise the drawing process slightly by telling swing we will always paint
+    // all of the pixels and never require transparency.
+    setOpaque(true);
+    // we do not need double buffering as we have no smooth transitions
+    // due to the chaotic nature of most fractals
+    setDoubleBuffered(false);
     this.width = settings.width;
     this.height = settings.height;
     this.settings = settings;
@@ -79,12 +86,22 @@ public class FractalPanel extends JPanel {
 
   @Override
   public void paintComponent(Graphics g) {
-    ChunkPainter.paintChunks(settings.width, settings.height, g, settings);
+    long startTime = System.nanoTime();
+    // create an image that covers the canvas and draw onto this instead of the JPanel 
+    BufferedImage img = new BufferedImage(
+        settings.width, settings.height, BufferedImage.TYPE_3BYTE_BGR
+    );
+
+    ChunkPainter.paintChunks(settings.width, settings.height, img.createGraphics(), settings);
     if (repaintCenter) {
       g.setColor(Color.RED);
       g.fillRect(settings.centerCoords.x - 1, settings.centerCoords.y - 1, 3, 3);
       repaintCenter = false;
     }
+    // draw the canvas onto the JPanel directly instead of drawing individual chunks
+    // this is far faster.
+    g.drawImage(img, 0, 0, null);
     settings.menu.refreshMenu();
+    System.out.println("Drawing Time: " + (System.nanoTime() - startTime) / 1000000);
   }
 }

@@ -22,6 +22,7 @@ public class ChunkPainter implements Runnable {
   public int x;
   @SuppressWarnings("MemberName")
   public int y;
+  private static int maxThreads = Runtime.getRuntime().availableProcessors();
 
   /**
    * Create a new Chunk Painter, which maps a chunk to an image
@@ -53,13 +54,11 @@ public class ChunkPainter implements Runnable {
    */
   public static void paintChunks(int width, int height, Graphics g, GlobalSettings settings) {
     Chunk[][] chunks = Chunk.createChunks(width, height, settings);
-
     ConcurrentLinkedQueue<ChunkPainter> painters = new ConcurrentLinkedQueue<>();
-    ExecutorService threadpool = Executors.newFixedThreadPool(10);
+    ExecutorService threadpool = Executors.newFixedThreadPool(Math.max(4, maxThreads - 2));
 
     for (int y = 0; y < chunks.length; y++) {
       for (int x = 0; x < chunks[0].length; x++) {
-        //paintChunk(chunks[y][x], g);
         BufferedImage image = new BufferedImage(32, 32, BufferedImage.TYPE_3BYTE_BGR);
         ChunkPainter painter = new ChunkPainter(
             chunks[y][x], image, settings.location.maxIterations, 32 * x, 32 * y);

@@ -13,6 +13,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import settings.GlobalSettings;
 import settings.Location;
 import utils.Utils;
 
@@ -58,11 +59,11 @@ public class LogPointAction extends AbstractAction {
     jsonNode.put("scale", location.scale);
 
     // read the existing JSON structure and append the new location
-    ObjectNode json = Utils.fileToJson(new File("src/config/pointLog.json"));
+    ObjectNode json = Utils.fileToJson(new File(GlobalSettings.pointLogPath));
     json.set(logPoint.nameField.getText(), jsonNode);
 
     try {
-      map.writeValue(new File("src/config/pointLog.json"), json);
+      map.writeValue(new File(GlobalSettings.pointLogPath), json);
     } catch (IOException err) {
       validationError("Error writing to point log file");
       return;
