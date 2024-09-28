@@ -86,6 +86,7 @@ public class FractalPanel extends JPanel {
 
   @Override
   public void paintComponent(Graphics g) {
+    long startTime = System.nanoTime();
     // create an image that covers the canvas and draw onto this instead of the JPanel 
     BufferedImage img = new BufferedImage(
         settings.width, settings.height, BufferedImage.TYPE_3BYTE_BGR
@@ -101,5 +102,6 @@ public class FractalPanel extends JPanel {
     // this is far faster.
     g.drawImage(img, 0, 0, null);
     settings.menu.refreshMenu();
+    System.out.println("Drawing Time: " + (System.nanoTime() - startTime) / 1000000);
   }
 }

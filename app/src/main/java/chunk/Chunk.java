@@ -21,6 +21,7 @@ public class Chunk implements Runnable {
   final double aspectRatio;
   final double scaleConstant;
   Color[][] iterationData;
+  static int maxThreads = Runtime.getRuntime().availableProcessors();
 
   /**
    * Create a new Chunk to represent a portion of the viewport.
@@ -51,7 +52,7 @@ public class Chunk implements Runnable {
     int chunksY = height / 32;
 
     Chunk[][] chunks = new Chunk[chunksY][chunksX];
-    ExecutorService threadpool = Executors.newCachedThreadPool();
+    ExecutorService threadpool = Executors.newFixedThreadPool(Math.max(4, maxThreads - 2));
 
     for (int y = 0; y < chunksY; y++) {
       for (int x = 0; x < chunksX; x++) {
