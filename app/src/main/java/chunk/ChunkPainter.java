@@ -2,7 +2,6 @@ package chunk;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -16,7 +15,6 @@ import settings.GlobalSettings;
 public class ChunkPainter implements Runnable {
   Chunk chunk;
   public BufferedImage image;
-  Graphics2D graphics;
   int maxIterations;
   @SuppressWarnings("MemberName")
   public int x;
@@ -40,8 +38,6 @@ public class ChunkPainter implements Runnable {
     this.x = x;
     this.y = y;
     this.image = image;
-  
-    graphics = image.createGraphics();
   }
 
   /**
@@ -85,8 +81,7 @@ public class ChunkPainter implements Runnable {
     for (int x = 0; x < chunk.size; x++) {
       for (int y = 0; y < chunk.size; y++) {
         Color current = chunk.iterationData[y][x];
-        graphics.setColor(current);
-        graphics.fillRect(x, y, 1, 1);
+        image.setRGB(x, y, current.getRGB());
       }
     }
   }
