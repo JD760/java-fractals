@@ -60,6 +60,9 @@ public class ColorMenu extends JMenu {
       public void stateChanged(ChangeEvent e) {
         JSlider source = (JSlider) e.getSource();
         sliderValue = source.getValue();
+        if (source.getValueIsAdjusting()) {
+          return;
+        }
         //System.out.println(sliderValue);
         freqLabel.setText(channel + " Frequency - " + Double.toString(sliderValue / 1000.0));
         switch (channel) {
