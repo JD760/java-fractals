@@ -1,7 +1,5 @@
 import gui.FractalPanel;
 import gui.Frame;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -19,7 +17,7 @@ import utils.Utils;
  */
 public class App {
   /**
-   * Create a new UI thread.
+   * Create a new UI thread and set up the project.
 
    * @param args - currently unused
    */
@@ -42,10 +40,12 @@ public class App {
   }
 
   private static void createAndShowGui() {
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    int width = (int) screenSize.getWidth();
-    int height = (int) screenSize.getHeight();
-    // create the largest square that can fit on the display
+    // Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    // int width = (int) screenSize.getWidth();
+    // int height = (int) screenSize.getHeight();
+    int width = 800;
+    int height = 600;
+    // create the largest rectangle that can fit on the display
     //int viewportSize = Math.min(height - (height % 32), width - (width % 32));
     GlobalSettings settings = new GlobalSettings();
     settings.width = width - (width % 32);

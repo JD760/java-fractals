@@ -12,6 +12,7 @@ import settings.GlobalSettings;
 public class Frame extends JFrame implements ComponentListener {
   private int prevWidth;
   private int prevHeight;
+  private GlobalSettings settings;
   private FractalPanel panel;
   private MenuBar menuBar;
 
@@ -22,6 +23,7 @@ public class Frame extends JFrame implements ComponentListener {
    */
   public Frame(FractalPanel panel, GlobalSettings settings) {
     super("Java Fractals");
+    this.settings = settings;
 
     menuBar = new MenuBar(settings);
     setJMenuBar(menuBar);
@@ -53,8 +55,8 @@ public class Frame extends JFrame implements ComponentListener {
     if (this.getWidth() != prevWidth || this.getHeight() != prevHeight) {
       this.prevHeight = this.getHeight();
       this.prevWidth = this.getWidth();
-      panel.width = getWidth();
-      panel.height = getHeight();
+      settings.width = getWidth();
+      settings.height = getHeight();
       panel.repaint();
     }
   }

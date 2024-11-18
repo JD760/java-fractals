@@ -16,6 +16,7 @@ import settings.Location;
 public class ContextMenu extends JPopupMenu {
   public Location location;
   private GlobalSettings settings;
+  JMenuItem pointInfo;
   JMenuItem showOrbit;
   JMenuItem logCurrentPoint;
   JMenuItem openPoi;
@@ -29,6 +30,7 @@ public class ContextMenu extends JPopupMenu {
     this.settings = settings;
     this.location = settings.location;
 
+    pointInfo = new JMenuItem("(");
     showOrbit = new JMenuItem("Show orbit");
     logCurrentPoint = new JMenuItem("Log Point of Interest");
     openPoi = new JMenuItem("Open Points of Interest");
@@ -36,6 +38,8 @@ public class ContextMenu extends JPopupMenu {
     openPoi.addActionListener(new OpenAction());
     logCurrentPoint.addActionListener(new LogPointAction(logCurrentPoint, location));
     showOrbit.addActionListener(new ShowOrbitAction(settings, getX(), getY()));
+    add(pointInfo);
+    addSeparator();
     add(showOrbit);
     addSeparator();
     add(logCurrentPoint);
