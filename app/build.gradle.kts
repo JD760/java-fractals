@@ -27,6 +27,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-core:2.17.0")
     implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
     implementation("com.fasterxml.jackson.core:jackson-annotations:2.17.0")
+    implementation("org.jogamp.gluegen:gluegen-rt:2.3.1")
+    implementation("org.jogamp.jogl:jogl-all-main:2.3.2")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

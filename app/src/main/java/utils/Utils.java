@@ -22,6 +22,7 @@ public class Utils {
    */
   public static String readFile(File file) {
     StringBuilder str = new StringBuilder();
+    System.out.println("Absolute Path: " + file.getAbsolutePath());
 
     try {
       FileReader reader = new FileReader(file);

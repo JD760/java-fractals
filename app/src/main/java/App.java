@@ -24,16 +24,17 @@ public class App {
    * @param args - currently unused
    */
   public static void main(String[] args) {
-    String jsonContents = Utils.readFile(new File(GlobalSettings.pointLogPath));
+    String jsonContents = Utils.readFile(new File(GlobalSettings.POINT_LOG_PATH));
     if (jsonContents.length() == 0) {
       try {
-        FileWriter writer = new FileWriter(new File(GlobalSettings.pointLogPath));
+        FileWriter writer = new FileWriter(new File(GlobalSettings.POINT_LOG_PATH));
         writer.write("{}");
         writer.close();
       } catch (IOException e) {
         System.err.println("Error while writing to file");
       }
     }
+
     SwingUtilities.invokeLater(new Runnable() {
       public void run() {
         createAndShowGui();

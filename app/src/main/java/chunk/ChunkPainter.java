@@ -69,7 +69,7 @@ public class ChunkPainter implements Runnable {
 
     threadpool.shutdown();
     try {
-      threadpool.awaitTermination(1000, TimeUnit.MILLISECONDS);
+      threadpool.awaitTermination(GlobalSettings.DRAWING_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       System.err.println("Iteration thread interrupted");
     }
