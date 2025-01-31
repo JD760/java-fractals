@@ -45,7 +45,7 @@ public class InterestingPoints extends JPanel {
    */
   public InterestingPoints(Location selected) {
     this.selected = selected;
-    ObjectNode json = Utils.fileToJson(new File(GlobalSettings.pointLogPath));
+    ObjectNode json = Utils.fileToJson(new File(GlobalSettings.POINT_LOG_PATH));
     Iterator<JsonNode> elements = json.elements();
     data = new JsonNode[json.size()];
 

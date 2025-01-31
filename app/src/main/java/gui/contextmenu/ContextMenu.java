@@ -52,7 +52,7 @@ public class ContextMenu extends JPopupMenu {
       JOptionPane.showMessageDialog(
           settings.panel,
           new InterestingPoints(selected),
-          "test",
+          "Points of Interest Log",
           JOptionPane.PLAIN_MESSAGE
       );
       if (selected.equals(new Location())) {

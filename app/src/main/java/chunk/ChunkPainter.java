@@ -65,7 +65,7 @@ public class ChunkPainter implements Runnable {
 
     threadpool.shutdown();
     try {
-      threadpool.awaitTermination(1000, TimeUnit.MILLISECONDS);
+      threadpool.awaitTermination(GlobalSettings.DRAWING_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
     } catch (InterruptedException e) {
       System.err.println("Iteration thread interrupted");
     }
@@ -73,11 +73,19 @@ public class ChunkPainter implements Runnable {
     while (!painters.isEmpty()) {
       ChunkPainter painter = painters.poll();
       g.drawImage(painter.image, painter.x, painter.y, null);
+      if (painter.chunk.skipped) {
+        g.setColor(Color.RED);
+        g.drawRect(painter.x, painter.y, painter.image.getWidth(), painter.image.getHeight());
+        g.setColor(Color.WHITE);
+      }
     }
   }
 
   @Override
   public void run() {
+    if (chunk.skipped) {
+      return;
+    }
     for (int x = 0; x < chunk.size; x++) {
       for (int y = 0; y < chunk.size; y++) {
         Color current = chunk.iterationData[y][x];

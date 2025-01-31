@@ -19,7 +19,8 @@ public class GlobalSettings {
   public FractalPanel panel;
   public MenuBar menu;
 
-  public static final String pointLogPath = "app/src/main/java/config/pointLog.json";
+  public static final String POINT_LOG_PATH = "src/main/java/config/pointLog.json";
+  public static final int DRAWING_TIMEOUT_MILLIS = 10_000;
 
   /**
    * Creates a new global settings object with default values.
