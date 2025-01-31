@@ -73,7 +73,7 @@ public class ChunkPainter implements Runnable {
     while (!painters.isEmpty()) {
       ChunkPainter painter = painters.poll();
       g.drawImage(painter.image, painter.x, painter.y, null);
-      if (painter.chunk.skipped) {
+      if (painter.chunk.skipped && GlobalSettings.DEBUG) {
         g.setColor(Color.RED);
         g.drawRect(painter.x, painter.y, painter.image.getWidth(), painter.image.getHeight());
         g.setColor(Color.WHITE);

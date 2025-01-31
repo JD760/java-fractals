@@ -21,6 +21,7 @@ public class GlobalSettings {
 
   public static final String POINT_LOG_PATH = "src/main/java/config/pointLog.json";
   public static final int DRAWING_TIMEOUT_MILLIS = 10_000;
+  public static boolean DEBUG = false;
 
   /**
    * Creates a new global settings object with default values.
