@@ -6,8 +6,7 @@ package settings;
 public enum Fractals {
   MANDELBROT,
   DIVERGENCE_SCHEME,
-  JULIA,
-  JULIA_DIVERGENCE;
+  JULIA;
 
   /**
    * Return a detailed string for each enumeration item that is more user-friendly
@@ -24,8 +23,6 @@ public enum Fractals {
         return "Mandelbrot Set (divergence scheme)";
       case JULIA:
         return "Julia Set";
-      case JULIA_DIVERGENCE:
-        return "Julia Set (divergence scheme)";
       default:
         return "";
     }
@@ -45,8 +42,6 @@ public enum Fractals {
         return Fractals.DIVERGENCE_SCHEME;
       case "JULIA":
         return Fractals.JULIA;
-      case "JULIA_DIVERGENDE":
-        return Fractals.JULIA_DIVERGENCE;
       default:
         return null;
     }

@@ -70,8 +70,7 @@ public class InfoMenu extends JMenu {
 
     copySettings.setAction(new CopyAction());
     copySettings.setText("Copy Settings");
-    seedLabel.setVisible(
-        location.mode == Fractals.JULIA || location.mode == Fractals.JULIA_DIVERGENCE);
+    seedLabel.setVisible(location.mode == Fractals.JULIA);
   }
 
   class CopyAction extends AbstractAction {

@@ -2,6 +2,7 @@ package chunk;
 
 import complex.Complex;
 import java.awt.Color;
+import java.math.BigDecimal;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +22,7 @@ public class Chunk implements Runnable {
   final double aspectRatio;
   final double scaleConstant;
   Color[][] iterationData;
+  boolean skipped = false;
   static int maxThreads = Runtime.getRuntime().availableProcessors();
 
   /**
@@ -80,8 +82,16 @@ public class Chunk implements Runnable {
     Complex seed = settings.location.seed;
     switch (settings.location.mode) {
       case MANDELBROT:
+        skipped = boundaryCheck();
+        if (skipped) {
+          break;
+        }
         for (int y = position[1]; y < position[1] + size; y++) {
           for (int x = position[0]; x < position[0] + size; x++) {
+            // if (x % 4 == 0 && y % 4 == 0) {
+            //   iterationData[y - position[1]][x - position[0]] = Color.RED;
+            //   continue;
+            // }
             iterationData[y - position[1]][x - position[0]] = mandelbrotPoint(x, y);
           }
         }
@@ -105,6 +115,46 @@ public class Chunk implements Runnable {
     }
   }
 
+  /**
+   * Check the boundary of each chunk, if it is composed only of points contained within the set
+   * then we know the interior does not need to be iterated.
+   *
+   * @return - false if we need to draw the chunk, true if we can skip it.
+   */
+  private boolean boundaryCheck() {
+    // top and bottom boundary
+    for (int x = position[0]; x < position[0] + size; x++) {
+      int topY = position[1];
+      int btmY = position[1] + size - 1;
+      if (mandelbrotPoint(x, topY) != Color.BLACK || mandelbrotPoint(x, btmY) != Color.BLACK) {
+        return false;
+      }
+    }
+    // left and right boundary (avoid recomputing the corners)
+    for (int y = position[1] + 1; y < position[1] + size - 1; y++) {
+      int leftX = position[0];
+      int rightX = position[0] + size - 1;
+      if (mandelbrotPoint(leftX, y) != Color.BLACK || mandelbrotPoint(rightX, y) != Color.BLACK) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private Color estimationRenderer(int x, int y, int radius) {
+    return Color.RED;
+  }
+
+  private BigDecimal[] arbitraryPrecisionPoint(int x, int y) {
+    BigDecimal[] c = new BigDecimal[2];
+    BigDecimal[] z = new BigDecimal[2];
+
+    c[0] = new BigDecimal(3 * x).divide(new BigDecimal(settings.width));
+    c[1] = new BigDecimal(3 * y).divide(new BigDecimal(settings.height));
+
+    return new BigDecimal[2];
+  }
+
   private Color mandelbrotPoint(int x, int y) {
     Complex c = new Complex(0, 0);
     Complex z = new Complex(0, 0);
@@ -114,12 +164,21 @@ public class Chunk implements Runnable {
     double y1 = y / (double) settings.height;
     c.setRe((3 * x1 - 2) * scaleConstant);
     c.setIm((3 * y1 - 1.25) / settings.location.scale);
+    c.subtract(settings.location.center);
+
+    // // if the initial point is within the 'exclusion area' then we know we can skip the iteration
+    // if (Math.sqrt(Math.pow((c.re() + 0.25), 2) + Math.pow(c.im(), 2)) <= 0.5) {
+    //   return Color.BLACK;
+    // }
+
+    // if (Math.sqrt(Math.pow(c.re() + 1, 2) + Math.pow(c.im(), 2)) <= 0.25) {
+    //   return Color.BLACK;
+    // }
 
     int iterations = 0;
     while (iterations < settings.location.maxIterations) {
       z.square();
       z.add(c);
-      z.subtract(settings.location.center);
 
       if (z.magnitude() > 4) {
         break;
